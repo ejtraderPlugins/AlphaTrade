@@ -1,53 +1,38 @@
-function AccountInfo= ParseAccountConfig()
+function AccountInfo = ParseAccountConfig()
 xmlfile = 'AccountConfig.xml';
 xDoc = xmlread(xmlfile);%读取xml文件
 xRoot = xDoc.getDocumentElement();%获取根节点
 
-% %获取InTrade节点
-% InTrade = xRoot.getElementsByTagName('intrade');
-% tmp = InTrade.item(0).getAttribute('id');
-% InTradeAccount = str2double(char(tmp));
-
 %获取account节点
-Account = xRoot.getElementsByTagName('account');
-numOfAccount = Account.getLength();
+Accounts = xRoot.getElementsByTagName('account');
+numOfAccount = Accounts.getLength();
 
-AccountID = zeros(1, numOfAccount);
-AccountName = cell(1, numOfAccount);
-TradeStatus = zeros(1, numOfAccount);
-StartDate = zeros(1, numOfAccount);
-Client = cell(1, numOfAccount);
-Unit = zeros(1, numOfAccount);
+AccountInfo = cell(1, numOfAccount);
 
 for i = 1:numOfAccount
-    mItem = Account.item(i-1);
-    tmp = mItem.getAttribute('id');%get AccountID
-    AccountID(i) = str2double(char(tmp));
-    tmp = mItem.getAttribute('name');%get AccountName
-    AccountName{i} = char(tmp);
-    tmp = mItem.getAttribute('status');%get status
-    TradeStatus(i) = str2double(char(tmp));
-    tmp = mItem.getAttribute('date');%get start date
-    StartDate(i) = str2double(char(tmp));
-    tmp = mItem.getAttribute('client');%get client
-    Client{i} = char(tmp);
-    tmp = mItem.getAttribute('unit');%get unit
-	Unit(i) = str2double(char(tmp));
+    m_account = Accounts.item(i-1);
+    tmp = m_account.getAttribute('id');%get AccountID
+    AccountInfo{i}.ID = str2double(char(tmp));
+    tmp = m_account.getAttribute('name');%get AccountName
+    AccountInfo{i}.NAME = char(tmp);
+    tmp = m_account.getAttribute('status');%get status
+    AccountInfo{i}.STATUS = str2double(char(tmp));
+    tmp = m_account.getAttribute('date');%get start date
+    AccountInfo{i}.DATE = str2double(char(tmp));
+    tmp = m_account.getAttribute('client');%get client
+    AccountInfo{i}.CLIENT = char(tmp);
+    tmp = m_account.getAttribute('unit');%get unit
+	AccountInfo{i}.UNIT = str2double(char(tmp));
+    
+    Pathes = m_account.getElementsByTagName('path');
+    num_path = Pathes.getLength();
+    
+    for j = 1:num_path
+        m_path = Pathes.item(j-1);
+        tmp = m_path.getAttribute('flag');% get log path
+        tag_name = upper(char(tmp));
+        tmp = m_path.getTextContent;
+        val = char(tmp);
+        eval(['AccountInfo{i}.' tag_name '= val;']);
+    end
 end
-
-%获取pathes节点
-Path = xRoot.getElementsByTagName('path');
-numOfPath = Path.getLength();
-Pathes = cell(1,numOfPath);
-for i = 1:numOfPath
-    mItem = Path.item(i-1);
-    Pathes{i} = char(mItem.getTextContent());%logpath, goalpath, indexlog
-end
-AccountInfo = cell(1,6);
-AccountInfo{1,1} = AccountID;
-AccountInfo{1,2} = AccountName;
-AccountInfo{1,3} = TradeStatus;
-AccountInfo{1,4} = StartDate;
-AccountInfo{1,5} = Client;
-AccountInfo{1,6} = Pathes;
-AccountConfig{1,7} = Unit;

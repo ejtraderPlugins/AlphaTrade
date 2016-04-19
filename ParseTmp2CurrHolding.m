@@ -1,7 +1,7 @@
 function ParseTmp2CurrHolding(AccountInfo, i)
 
-ID = AccountInfo{1}(i);
-Client = AccountInfo{6}{i};
+ID = AccountInfo{i}.ID;
+Client = AccountInfo{i}.CLIENT;
 eval(['ParseTmp2CurrHolding_' Client '(AccountInfo, ID);']);
 
 

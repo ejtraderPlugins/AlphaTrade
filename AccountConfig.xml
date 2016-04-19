@@ -1,101 +1,106 @@
-<root>
-	<accounts>
-		<account id='1' name='SHUNSHI_DAHUA' status='1' date='20150403' client='xuntou' unit='1'>
-			<pathes>
-				<path flag='logpath'>E:\Chn_Stocks_Trading_System\Trade_Logs\</path>
-				<path flag='goalpath'>E:\Chn_Stocks_Trading_System\Trade_Goals\</path>
-				<path flag='indexlog'>E:\Chn_Stocks_Trading_System\IndexTradeLogs\</path>
-				<path flag='cleandata'>E:\CleanData\</path>
-				<path flag='reportresultdata'>E:\ReportResultData\</path>
-			</pathes>
-		</account>
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<account_config>
+
+<accounts>
+	<account id='1' name='SHUNSHI_DAHUA' status='1' date='20150403' client='xuntou' unit='1'>
+		<pathes>
+			<path flag='logpath'>E:\Chn_Stocks_Trading_System\Trade_Logs\</path>
+			<path flag='goalpath'>E:\Chn_Stocks_Trading_System\Trade_Goals\</path>
+			<path flag='indexlogpath'>E:\Chn_Stocks_Trading_System\IndexTradeLogs\</path>
+			<path flag='cleandatapath'>E:\CleanData\</path>
+			<path flag='reportresultdatapath'>E:\ReportResultData\</path>
+			<path flag='lastpricepath'>E:\Chn_Stocks_Trading_System\DailyReport\ReportData\LastPrice\</path>
+		</pathes>
+	</account>
+
+	<account id='2' name='SHUNSHI_DAHUA' status='1' date='20150403' client='xuntou' unit='1'>
+		<pathes>
+			<path flag='logpath'>E:\Chn_Stocks_Trading_System\Trade_Logs\</path>
+			<path flag='goalpath'>E:\Chn_Stocks_Trading_System\Trade_Goals\</path>
+			<path flag='indexlogpath'>E:\Chn_Stocks_Trading_System\IndexTradeLogs\</path>
+			<path flag='cleandatapath'>E:\CleanData\</path>
+			<path flag='reportresultdatapath'>E:\ReportResultData\</path>
+			<path flag='lastpricepath'>E:\Chn_Stocks_Trading_System\DailyReport\ReportData\LastPrice\</path>
+		</pathes>
+	</account>
 	
-		<account id='2' name='SHUNSHI_DAHUA' status='1' date='20150403' client='xuntou' unit='1'>
-			<pathes>
-				<path flag='logpath'>E:\Chn_Stocks_Trading_System\Trade_Logs\</path>
-				<path flag='goalpath'>E:\Chn_Stocks_Trading_System\Trade_Goals\</path>
-				<path flag='indexlog'>E:\Chn_Stocks_Trading_System\IndexTradeLogs\</path>
-				<path flag='cleandata'>E:\CleanData\</path>
-				<path flag='reportresultdata'>E:\ReportResultData\</path>
-				<path flag='lastprice'>E:\Chn_Stocks_Trading_System\DailyReport\ReportData\LastPrice\</path>
-			</pathes>
-		</account>
-		
-		<account id='3' name='DERUN_GUOLIAN' status='1' date='20150409' client='zhongxin' unit='1'>
-			<pathes>
-				<path flag='logpath'>E:\Chn_Stocks_Trading_System\Trade_Logs\</path>
-				<path flag='goalpath'>E:\Chn_Stocks_Trading_System\Trade_Goals\</path>
-				<path flag='indexlog'>E:\Chn_Stocks_Trading_System\IndexTradeLogs\</path>
-				<path flag='cleandata'>E:\CleanData\</path>
-				<path flag='reportresultdata'>E:\ReportResultData\</path>
-				<path flag='lastprice'>E:\Chn_Stocks_Trading_System\DailyReport\ReportData\LastPrice\</path>
-			</pathes>
-		</account>
-		
-		<account id='4' name='ZQIN_HUABAO' status='1' date='20150514' client='winner' unit='1'>
-			<pathes>
-				<path flag='logpath'>E:\Chn_Stocks_Trading_System\Trade_Logs\</path>
-				<path flag='goalpath'>E:\Chn_Stocks_Trading_System\Trade_Goals\</path>
-				<path flag='indexlog'>E:\Chn_Stocks_Trading_System\IndexTradeLogs\</path>
-				<path flag='cleandata'>E:\CleanData\</path>
-				<path flag='reportresultdata'>E:\ReportResultData\</path>
-				<path flag='lastprice'>E:\Chn_Stocks_Trading_System\DailyReport\ReportData\LastPrice\</path>
-			</pathes>
-		</account>
-		
-		<account id='5' name='HANDE_GUANTONG' status='1' date='20150602' client='zhongxin' unit='1'>
-			<pathes>
-				<path flag='logpath'>E:\Chn_Stocks_Trading_System\Trade_Logs\</path>
-				<path flag='goalpath'>E:\Chn_Stocks_Trading_System\Trade_Goals\</path>
-				<path flag='indexlog'>E:\Chn_Stocks_Trading_System\IndexTradeLogs\</path>
-				<path flag='cleandata'>E:\CleanData\</path>
-				<path flag='reportresultdata'>E:\ReportResultData\</path>
-				<path flag='lastprice'>E:\Chn_Stocks_Trading_System\DailyReport\ReportData\LastPrice\</path>
-			</pathes>
-		</account>
-		
-		<account id='6' name='HANTAK_GUOXIN' status='1' date='20151013' client='xuntou' unit='1'>
-			<pathes>
-				<path flag='logpath'>E:\Chn_Stocks_Trading_System\Trade_Logs\</path>
-				<path flag='goalpath'>E:\Chn_Stocks_Trading_System\Trade_Goals\</path>
-				<path flag='indexlog'>E:\Chn_Stocks_Trading_System\IndexTradeLogs\</path>
-				<path flag='cleandata'>E:\CleanData\</path>
-				<path flag='reportresultdata'>E:\ReportResultData\</path>
-				<path flag='lastprice'>E:\Chn_Stocks_Trading_System\DailyReport\ReportData\LastPrice\</path>
-			</pathes>
-		</account>
-		
-		<account id='7' name='CHUANJIABAO_GUOTAI' status='1' date='20161013' client='zhongxin' unit='1'>
-			<pathes>
-				<path flag='logpath'>E:\Chn_Stocks_Trading_System\Trade_Logs\</path>
-				<path flag='goalpath'>E:\Chn_Stocks_Trading_System\Trade_Goals\</path>
-				<path flag='indexlog'>E:\Chn_Stocks_Trading_System\IndexTradeLogs\</path>
-				<path flag='cleandata'>E:\CleanData\</path>
-				<path flag='reportresultdata'>E:\ReportResultData\</path>
-				<path flag='lastprice'>E:\Chn_Stocks_Trading_System\DailyReport\ReportData\LastPrice\</path>
-			</pathes>
-		</account>
+	<account id='3' name='DERUN_GUOLIAN' status='1' date='20150409' client='zhongxin' unit='1'>
+		<pathes>
+			<path flag='logpath'>E:\Chn_Stocks_Trading_System\Trade_Logs\</path>
+			<path flag='goalpath'>E:\Chn_Stocks_Trading_System\Trade_Goals\</path>
+			<path flag='indexlogpath'>E:\Chn_Stocks_Trading_System\IndexTradeLogs\</path>
+			<path flag='cleandatapath'>E:\CleanData\</path>
+			<path flag='reportresultdatapath'>E:\ReportResultData\</path>
+			<path flag='lastpricepath'>E:\Chn_Stocks_Trading_System\DailyReport\ReportData\LastPrice\</path>
+		</pathes>
+	</account>
+	
+	<account id='4' name='ZQIN_HUABAO' status='1' date='20150514' client='winner' unit='1'>
+		<pathes>
+			<path flag='logpath'>E:\Chn_Stocks_Trading_System\Trade_Logs\</path>
+			<path flag='goalpath'>E:\Chn_Stocks_Trading_System\Trade_Goals\</path>
+			<path flag='indexlogpath'>E:\Chn_Stocks_Trading_System\IndexTradeLogs\</path>
+			<path flag='cleandatapath'>E:\CleanData\</path>
+			<path flag='reportresultdatapath'>E:\ReportResultData\</path>
+			<path flag='lastpricepath'>E:\Chn_Stocks_Trading_System\DailyReport\ReportData\LastPrice\</path>
+		</pathes>
+	</account>
+	
+	<account id='5' name='HANDE_GUANTONG' status='1' date='20150602' client='zhongxin' unit='1'>
+		<pathes>
+			<path flag='logpath'>E:\Chn_Stocks_Trading_System\Trade_Logs\</path>
+			<path flag='goalpath'>E:\Chn_Stocks_Trading_System\Trade_Goals\</path>
+			<path flag='indexlogpath'>E:\Chn_Stocks_Trading_System\IndexTradeLogs\</path>
+			<path flag='cleandatapath'>E:\CleanData\</path>
+			<path flag='reportresultdatapath'>E:\ReportResultData\</path>
+			<path flag='lastpricepath'>E:\Chn_Stocks_Trading_System\DailyReport\ReportData\LastPrice\</path>
+		</pathes>
+	</account>
+	
+	<account id='6' name='HANTAK_GUOXIN' status='1' date='20151013' client='xuntou' unit='1'>
+		<pathes>
+			<path flag='logpath'>E:\Chn_Stocks_Trading_System\Trade_Logs\</path>
+			<path flag='goalpath'>E:\Chn_Stocks_Trading_System\Trade_Goals\</path>
+			<path flag='indexlogpath'>E:\Chn_Stocks_Trading_System\IndexTradeLogs\</path>
+			<path flag='cleandatapath'>E:\CleanData\</path>
+			<path flag='reportresultdatapath'>E:\ReportResultData\</path>
+			<path flag='lastpricepath'>E:\Chn_Stocks_Trading_System\DailyReport\ReportData\LastPrice\</path>
+		</pathes>
+	</account>
+	
+	<account id='7' name='CHUANJIABAO_GUOTAI' status='1' date='20161013' client='zhongxin' unit='1'>
+		<pathes>
+			<path flag='logpath'>E:\Chn_Stocks_Trading_System\Trade_Logs\</path>
+			<path flag='goalpath'>E:\Chn_Stocks_Trading_System\Trade_Goals\</path>
+			<path flag='indexlogpath'>E:\Chn_Stocks_Trading_System\IndexTradeLogs\</path>
+			<path flag='cleandatapath'>E:\CleanData\</path>
+			<path flag='reportresultdatapath'>E:\ReportResultData\</path>
+			<path flag='lastpricepath'>E:\Chn_Stocks_Trading_System\DailyReport\ReportData\LastPrice\</path>
+		</pathes>
+	</account>
 
-		<account id='8' name='DEBEN_HUATAI' status='1' date='20160105' client='xuntou' unit='100'>
-			<pathes>
-				<path flag='logpath'>E:\Chn_Stocks_Trading_System\Trade_Logs\</path>
-				<path flag='goalpath'>E:\Chn_Stocks_Trading_System\Trade_Goals\</path>
-				<path flag='indexlog'>E:\Chn_Stocks_Trading_System\IndexTradeLogs\</path>
-				<path flag='cleandata'>E:\CleanData\</path>
-				<path flag='reportresultdata'>E:\ReportResultData\</path>
-				<path flag='lastprice'>E:\Chn_Stocks_Trading_System\DailyReport\ReportData\LastPrice\</path>
-			</pathes>
-		</account>
+	<account id='8' name='DEBEN_HUATAI' status='1' date='20160105' client='xuntou' unit='100'>
+		<pathes>
+			<path flag='logpath'>E:\Chn_Stocks_Trading_System\Trade_Logs\</path>
+			<path flag='goalpath'>E:\Chn_Stocks_Trading_System\Trade_Goals\</path>
+			<path flag='indexlogpath'>E:\Chn_Stocks_Trading_System\IndexTradeLogs\</path>
+			<path flag='cleandatapath'>E:\CleanData\</path>
+			<path flag='reportresultdatapath'>E:\ReportResultData\</path>
+			<path flag='lastpricepath'>E:\Chn_Stocks_Trading_System\DailyReport\ReportData\LastPrice\</path>
+		</pathes>
+	</account>
 
-		<account id='9' name='JINQU_DONGHANG' status='1' date='20160114' client='a8' unit='1'>
-			<pathes>
-				<path flag='logpath'>E:\Chn_Stocks_Trading_System\Trade_Logs\</path>
-				<path flag='goalpath'>E:\Chn_Stocks_Trading_System\Trade_Goals\</path>
-				<path flag='indexlog'>E:\Chn_Stocks_Trading_System\IndexTradeLogs\</path>
-				<path flag='cleandata'>E:\CleanData\</path>
-				<path flag='reportresultdata'>E:\ReportResultData\</path>
-				<path flag='lastprice'>E:\Chn_Stocks_Trading_System\DailyReport\ReportData\LastPrice\</path>
-			</pathes>
-		</account>
-	</accounts>
-</root>
+	<account id='9' name='JINQU_DONGHANG' status='1' date='20160114' client='a8' unit='1'>
+		<pathes>
+			<path flag='logpath'>E:\Chn_Stocks_Trading_System\Trade_Logs\</path>
+			<path flag='goalpath'>E:\Chn_Stocks_Trading_System\Trade_Goals\</path>
+			<path flag='indexlogpath'>E:\Chn_Stocks_Trading_System\IndexTradeLogs\</path>
+			<path flag='cleandatapath'>E:\CleanData\</path>
+			<path flag='reportresultdatapath'>E:\ReportResultData\</path>
+			<path flag='lastpricepath'>E:\Chn_Stocks_Trading_System\DailyReport\ReportData\LastPrice\</path>
+		</pathes>
+	</account>
+</accounts>
+
+</account_config>

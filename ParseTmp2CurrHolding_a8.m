@@ -1,18 +1,13 @@
 function ParseTmp2CurrHolding_a8(AccountInfo, i)
 times = clock;
 ndate = times(1) * 1e4 + times(2) * 1e2 + times(3);
-date = double2str(ndate);
-path = [AccountInfo{6}{1} AccountInfo{2}{i} '\'];
-fname = [path 'last_holdings_' date '.xlsx'];
-sourceFile = [path fname];%持仓log文件     
-destDir = [AccountInfo{6}{2} 'currentHolding\' AccountInfo{2}{i} '\'];
-if ~exist(destDir, 'dir')
-    mkdir(destDir);
-end
-destFile = [destDir 'current_holdings_' date '.txt'];%生成currentHolding文件
+sdate = num2str(ndate);
+path = [AccountInfo{i}.LOGPATH AccountInfo{i}.NAME '\'];
+sourceFile = [path sdate '\stock_holdings.xlsx'];
+destFile = [path sdate '\current_holdings.txt'];
 
 %% parse holding log file
-unit = AccountInfo{7}(i);
+unit = AccountInfo{i}.UNIT;
 [~, ~, rawData] = xlsread(sourceFile);
 numOfInst = size(rawData,1) - 3;
 if numOfInst > 0

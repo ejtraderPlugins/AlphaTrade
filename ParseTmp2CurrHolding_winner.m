@@ -1,18 +1,13 @@
 function ParseTmp2CurrHolding_winner(AccountInfo, i)
 times = clock;
 ndate = times(1) * 1e4 + times(2) * 1e2 + times(3);
-date = double2str(ndate);
-path = [AccountInfo{6}{1} AccountInfo{2}{i} '\'];
-fname = [path 'stock_holdings_' date '.csv'];
-sourceFile = [path fname];
-destDir = [AccountInfo{6}{2} AccountInfo{2}{i} '\'];
-if ~exist(destDir, 'dir')
-    mkdir(destDir);
-end
-destFile = [destDir 'current_holdings_' date '.txt'];
+sdate = num2str(ndate);
+path = [AccountInfo{i}.LOGPATH AccountInfo{i}.NAME '\'];
+sourceFile = [path sdate '\stock_holdings.csv'];
+destFile = [path sdate '\current_holdings.txt'];
 
 %% parse holding log file
-unit = AccountInfo{7}(i);
+unit = AccountInfo{i}.UNIT;
 fid_s = fopen(sourceFile, 'r');
 if fid_s > 0
     rawData = textscan(fid_s, '%s %s %s %s %s %s %s %s %s %s %s %s','delimiter',',');

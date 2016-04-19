@@ -1,13 +1,13 @@
 function TradeProcess(AccountInfo)
-numAccount = size(AccountInfo{1,1},1);
-selectMoney = zeros(numAccount,1);
-usingMoney  = zeros(numAccount,1);
-share             = zeros(numAccount,1);
-selectFS       = zeros(numAccount,1);
-CAP              = zeros(numAccount,1);
+numAccount = length(AccountInfo);
+selectMoney = zeros(1, numAccount);
+usingMoney  = zeros(1, numAccount);
+share             = zeros(1, numAccount);
+selectFS       = zeros(1, numAccount);
+CAP              = zeros(1, numAccount);
 
 for i = 1:numAccount
-    if AccountInfo{1,3}(i) > 0 %当前账号active
+    if AccountInfo{i}.STATUS > 0 %当前账号active
         
         %% process tmp holding to get current holding
         %统一命名为tmpHolding_20160331.*类似的，并放在TradeLogs/（各账号）/的目录下。
