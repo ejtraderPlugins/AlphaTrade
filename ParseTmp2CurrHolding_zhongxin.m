@@ -3,11 +3,11 @@ times = clock;
 ndate = times(1) * 1e4 + times(2) * 1e2 + times(3);
 sdate = num2str(ndate);
 path = [AccountInfo{i}.LOGPATH AccountInfo{i}.NAME '\'];
-sourceFile = [path sdate '\stock_holdings.txt'];
-destFile = [path sdate '\current_holdings.txt'];
+sourceFile = [path sdate '\stock_holding.txt'];
+destFile = [path sdate '\current_holding.txt'];
 
 %% parse holding log file
-unit = AccountInfo{i}.UNIT;
+unit = str2double(AccountInfo{i}.UNIT);
 fid_s = fopen(sourceFile, 'r');
 if fid_s > 0
     holding = zeros(1000000,3);

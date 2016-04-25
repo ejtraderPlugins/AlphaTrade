@@ -7,7 +7,7 @@ selectFS       = zeros(1, numAccount);
 CAP              = zeros(1, numAccount);
 
 for i = 1:numAccount
-    if AccountInfo{i}.STATUS > 0 %当前账号active
+    if strcmp(AccountInfo{i}.STATUS, 'on') %当前账号active
         
         %% process tmp holding to get current holding
         %统一命名为tmpHolding_20160331.*类似的，并放在TradeLogs/（各账号）/的目录下。

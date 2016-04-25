@@ -3,11 +3,11 @@ times = clock;
 ndate = times(1) * 1e4 + times(2) * 1e2 + times(3);
 sdate = num2str(ndate);
 path = [AccountInfo{i}.LOGPATH AccountInfo{i}.NAME '\'];
-sourceFile = [path sdate '\stock_holdings.xlsx'];
-destFile = [path sdate '\current_holdings.txt'];
+sourceFile = [path sdate '\stock_holding.xlsx'];
+destFile = [path sdate '\current_holding.txt'];
 
 %% parse holding log file
-unit = AccountInfo{i}.UNIT;
+unit = str2double(AccountInfo{i}.UNIT);
 [~, ~, rawData] = xlsread(sourceFile);
 numOfInst = size(rawData,1) - 3;
 if numOfInst > 0
