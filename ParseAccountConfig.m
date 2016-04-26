@@ -18,7 +18,7 @@ for i = 1:numOfAccount
         val_attribute = m_account.getAttribute(name_attribute);
         val_attribute = char(val_attribute);
         name_attribute = upper(name_attribute);
-        eval(['AccountInfo{i}.' name_attribute ' = val_attribute']);
+        eval(['AccountInfo{i}.' name_attribute ' = val_attribute;']);
     end
     
     Pathes = m_account.getElementsByTagName('path');
