@@ -1,4 +1,4 @@
 function GenerateTradeVol(AccountInfo, i)
-ID = AccountInfo{1}(i);
-Client = AccountInfo{6}{i};
+ID = str2double(AccountInfo{i}.ID);
+Client = AccountInfo{i}.CLIENT;
 eval(['GenerateTradeVol_' Client '(AccountInfo, ID);']);

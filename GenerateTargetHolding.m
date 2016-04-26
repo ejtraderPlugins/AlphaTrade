@@ -1,240 +1,312 @@
-function [selectMoney, usingMoney, share, selectFS, CAP] = GenerateTargetHolding(AccountInfo, i)
+function [selectMoney, usingMoney, share_today, selectFS, CAP] = GenerateTargetHolding(AccountInfo, id)
+selectMoney = 0;
+usingMoney = 0;
+share_today  = zeros(1,3);
+selectFS = 0;
+CAP = 0;
+
 times = clock;
 ndate  = times(1) * 1e4 + times(2) * 1e2 + times(3);
 sdate = num2str(ndate);
 
-strategy_dir           = [AccountInfo{i}.GOALPATH 'stockStrategy\'];
-stockdata_base    = strategy_dir;
-co_forbiden_files = [AccountInfo{i}.GOALPATH 'currentHolding\co_forbiden_list.txt'];
-stockdata_dir        = [stockdata_base sdate '\'];
-file_share              = [AccountInfo{i}.GOALPATH 'currentHolding\' AccountInfo{i}.NAME '\share.txt'];
-holdings_dir          = [AccountInfo{i}.LOGPATH AccountInfo{i}.NAME '\' sdate '\'];
-current_file           = [holdings_dir 'current_holding.txt'];
-adds_file              = [holdings_dir 'adds_' sdate '_' AccountInfo{2}{i} '.txt'];
-forbiden_file        = [holdings_dir 'forbiden_' AccountInfo{2}{i} '.txt'];
-alpha_file             =[strategy_dir 'alpha_.' num2str(date)];                
-
-if exist(file_share,'file')
-    ShareHedges = load(file_share);
-    pShareHedge = find(ShareHedges(:,1) == ndate);
-    if isempty(pShareHedge)
-        fprintf(2, '--->>> No share + hedge data in ShareFile. file_share = %s.\n', file_share);
-    else
-        share = ShareHedges(pShareHedge, 2);
-        hedge =ShareHedges(pShareHedge, 3:4);
-
-        fs   = 2.0:-0.01:0;
-        N_FS = length(fs);
-
-        tmpAlphas  = importdata(alpha_file);
-        N_TMPALPHA = size(tmpAlphas.textdata, 1);
-
-        times = clock;
-        tmpTimes = datevec(datenum(times)-1/24/60);
-        mins     = tmpTimes(4) * 1e2 + tmpTimes(5);
-        load([stockdata_dir 'stockPrice_' num2str(date) '_' num2str(mins) '.mat']);%stockPrice
-        load([stockdata_dir 'indexPrice_' num2str(date) '_' num2str(mins) '.mat']);%indexPrice
-
-        p300 = find(indexPrice(:,3) == 300);
-        p50  = find(indexPrice(:,3) == 16);
-        if isempty(p300)
-            datas      = urlread('http://hq.sinajs.cn/list=s_sh000300');
-            positions  = find(datas == ',');
-            HS300Price = str2double(datas(positions(1)+1:positions(2)-1));
-            fprintf('HS300Price urlread.\n');
-        else
-            HS300Price = indexPrice(p300, 1);
-        end
-
-        if isempty(p50)
-            datas2     = urlread('http://hq.sinajs.cn/list=s_sh000016');
-            positions2 = find(datas2 == ',');
-            A50Price   = str2double(datas2(positions2(1)+1:positions2(2)-1));
-            fprintf('A50Price urlread.\n');
-        else
-            A50Price   = indexPrice(p50, 1);
-        end
-
-        N_STOCK              = size(stockPrice, 1);
-        instrlist            = zeros(1, N_STOCK);
-        instrlist(1:N_STOCK) = stockPrice(1:N_STOCK, 3);
-
-        alphas = zeros(1, N_STOCK);
-        for ti = 1:N_TMPALPHA
-            inst = tmpAlphas.textdata{ti, 2};
-            inst = str2num(inst(3:8));
-
-            post = find(stockPrice(:, 3) == inst, 1, 'first');
-            alphas(post) = tmpAlphas.data(ti, 1);
-        end
-
-        currentHoldings = zeros(1, N_STOCK);
-        availHoldings   = zeros(1, N_STOCK);
-        tmpHoldings = load(current_file);
-        N_HOLDINGS  = size(tmpHoldings, 1);
-        for hi = 1:N_HOLDINGS
-            inst1 = tmpHoldings(hi, 1);
-            post1 = find(stockPrice(:, 3) == inst1, 1, 'first');
-            currentHoldings(1, post1) = tmpHoldings(hi, 2);
-            availHoldings(1, post1)   = tmpHoldings(hi, 3);
-        end
-
-        if exist(adds_file, 'file')
-            tmpAdds = load(adds_file);
-            N_ADD   = size(tmpAdds, 1);
-            for adi = 1:N_ADD
-                inst1 = tmpAdds(adi, 1);
-                post1 = find(stockPrice(:, 3) == inst1, 1, 'first');
-                currentHoldings(ai, post1) = currentHoldings(ai, post1) + tmpAdds(adi, 2);
-            end
-        end
-
-        forbiden       = zeros(1, N_STOCK);
-        coForbidenList = load(co_forbiden_files);
-        N_CF           = size(coForbidenList, 1);
-        for ii = 1:N_CF
-            inst1 = coForbidenList(ii, 1);
-            post1 = find(stockPrice(:, 3) == inst1, 1, 'first');
-            if (isempty(post1))
-                continue
-            end
-
-            forbiden(:, post1) = 1;
-        end
-
-        if exist(forbiden_file, 'file')
-            tmpForbidenList = load(forbiden_file);
-            N_FORBIDEN      = size(tmpForbidenList, 1);
-            for ii = 1:N_FORBIDEN
-                inst1 = tmpForbidenList(ii, 1);
-                post1 = find(stockPrice(:, 3) == inst1, 1, 'first');
-                if (isempty(post1))
-                    continue
-                end
-                forbiden(1, post1) = 1;
-            end
-        end
-
-        %% generate money
-        limitUp  = 1.05;
-        limitLow = 1.01;
-        selectFS          = zeros(1, 1);
-        selectMoney    = zeros(1, 1);
-        targetHoldings = zeros(1, N_STOCK);
-        usingMoney     = zeros(1, N_STOCK);
-        Tradeable        = ones(1, 1);
-        CAP                 = ones(1, 1) * limitLow;
-
-        Tradeable(1)   = 0;
-        Tradeable(2)   = 0;
-%         for si = 1:N_SHARES
-            for fi = 1:N_FS
-                stockShares = zeros(N_STOCK, 1);
-                benchMoney  = HS300Price * share + (HS300Price * hedge(1, 1) - A50Price * hedge(1, 2));
-                benchMoney  = benchMoney * 300;
-                money       = benchMoney * fs(fi);
-                money       = fix(money / 1e4) * 1e4;
-                usedMoney   = 0;
-                for ii = 1:N_STOCK
-                    if (forbiden(1, ii) == 1)
-                        continue
-                    end
-
-                    if (stockPrice(ii, 2) == 0)
-                        stockShares(ii) = currentHoldings(1, ii);
-                    elseif (stockPrice(ii, 2) == 1)
-                        stockShares(ii) = money * alphas(ii) / stockPrice(ii, 1);
-                        minHoldings     = max(0, currentHoldings(1, ii) - availHoldings(1, ii));
-                        stockShares(ii) = max(stockShares(ii), minHoldings);
-                        stockShares(ii) = fix(stockShares(ii) / 100) * 100;
-                    elseif (stockPrice(ii, 2) == 2)
-                        stockShares(ii) = money * alphas(ii) / stockPrice(ii, 1);
-                        stockShares(ii) = max(stockShares(ii), currentHoldings(1, ii));
-                        stockShares(ii) = fix(stockShares(ii) / 100) * 100;
-                    elseif (stockPrice(ii, 2) == 3)
-                        % Stop Selling STOCKS HIT LOWER LIMIT (AS SEC CONTROL)
-                        stockShares(ii) = currentHoldings(1, ii);
-                    end
-
-                    if (stockPrice(ii, 2) == 1)
-                        usedMoney = usedMoney + stockShares(ii) * stockPrice(ii, 1);
-                    else
-                        usedMoney = usedMoney + currentHoldings(1, ii) * stockPrice(ii, 1);
-                    end
-                end
-
-                if ((usedMoney > benchMoney) && (usedMoney < benchMoney * CAP(1)))
-                    selectMoney(1) = money;
-                    selectFS(1)    = fs(fi);
-                    usingMoney(1)  = usedMoney;
-                    for ii = 1:N_STOCK
-                        targetHoldings(1, ii) = stockShares(ii);
-                    end
-                end
-            end
-            if selectFS(1) == 0 && Tradeable(1) == 1
-                CAP(1) = limitUp;
-                for fi = 1:N_FS
-                    stockShares = zeros(N_STOCK, 1);
-                    benchMoney  = HS300Price * share + (HS300Price * hedge(1, 1) - A50Price * hedge(1, 2));
-                    benchMoney  = benchMoney * 300;
-                    money       = benchMoney * fs(fi);
-                    money       = fix(money / 1e4) * 1e4;
-                    usedMoney   = 0;
-                    for ii = 1:N_STOCK
-                        if (forbiden(1, ii) == 1)
-                            continue
-                        end
-
-                        if (stockPrice(ii, 2) == 0)
-                            stockShares(ii) = currentHoldings(1, ii);
-                        elseif (stockPrice(ii, 2) == 1)
-                            stockShares(ii) = money * alphas(ii) / stockPrice(ii, 1);
-                            minHoldings     = max(0, currentHoldings(1, ii) - availHoldings(1, ii));
-                            stockShares(ii) = max(stockShares(ii), minHoldings);
-                            stockShares(ii) = fix(stockShares(ii) / 100) * 100;
-                        elseif (stockPrice(ii, 2) == 2)
-                            stockShares(ii) = money * alphas(ii) / stockPrice(ii, 1);
-                            stockShares(ii) = max(stockShares(ii), currentHoldings(1, ii));
-                            stockShares(ii) = fix(stockShares(ii) / 100) * 100;
-                        elseif (stockPrice(ii, 2) == 3)
-                            % Stop Selling STOCKS HIT LOWER LIMIT (AS SEC CONTROL)
-                            stockShares(ii) = currentHoldings(1, ii);
-                        end
-
-                        if (stockPrice(ii, 2) == 1)
-                            usedMoney = usedMoney + stockShares(ii) * stockPrice(ii, 1);
-                        else
-                            usedMoney = usedMoney + currentHoldings(1, ii) * stockPrice(ii, 1);
-                        end
-                    end
-                    if ((usedMoney > benchMoney) && (usedMoney < benchMoney * CAP(1)))
-                        selectMoney(1) = money;
-                        selectFS(1)    = fs(fi);
-                        usingMoney(1)  = usedMoney;
-                        for ii = 1:N_STOCK
-                            targetHoldings(1, ii) = stockShares(ii);
-                        end
-                    end
-                end
-            end
+numOfAccount = length(AccountInfo);
+for i = 1:numOfAccount
+    if str2double(AccountInfo{i}.ID) == id
+        break;
     end
-    op_file = fopen([strategy_dir 'size.' num2str(date)], 'w');
-    fprintf(op_file, '%10d',date);
-    fprintf(op_file, '%20d%10d',selectMoney(1), share);
-    fprintf(op_file, '\n');
-    fclose(op_file);
-       
-    op_file = fopen([holdings_dir 'targetHoldings_' sdate '.txt'], 'w');
-    for ii = 1:N_STOCK
-        fprintf(op_file, '%10d%20d\n', instrlist(ii), targetHoldings(si, ii));
-    end
-    fclose(op_file);
-else
-    selectMoney = 0;
-    usingMoney = 0;
-    share = 0;
-    selectFS = 0;
-    CAP = 0;
-    fprintf(2, '--->>> Share file not exist. file_share = %s.\n', file_share);
 end
+
+dir_strategy           = [AccountInfo{i}.GOALPATH 'stockStrategy\'];
+dir_current             = [AccountInfo{i}.GOALPATH 'currentHolding\'];
+try
+    dir_stockprice = [dir_strategy sdate '\'];
+    file_alpha         = [dir_strategy 'alpha.' num2str(date)];
+catch
+    dir_stockprice = [AccountInfo{i}.STOCKPRICEPATH sdate '\'];
+    file_alpha         =[dir_stockprice 'alpha.' num2str(date)];
+end
+try
+    dir_mkdata = AccountInfo{i}.MARKETDATAPATH;
+catch
+end
+file_co_forbidden = [dir_current 'co_forbidden_list.txt'];
+file_share              = [dir_current AccountInfo{i}.NAME '\share.txt'];
+file_current           = [dir_current AccountInfo{i}.NAME '\current_holding.txt'];
+file_adds              = [dir_current AccountInfo{i}.NAME '\adds.txt'];
+file_forbidden      = [dir_current AccountInfo{i}.NAME '\forbidden.txt'];
+
+%% load share, share(:,1)-> date , share(:,2) -> IF, share(:,3) -> IH, share(:,4) -> IC
+if exist(file_share,'file')
+    share = load(file_share);
+    ptoday = find(share(:,1) == ndate, 'last');
+else
+    fprintf(2,'--->>> share file not exist. file = %s.\n', file_share);
+    return;
+end
+if isempty(ptoday)
+    share = [share; [ndate share(end,2:4)]];
+    share_today = share(end, 2:4);
+    fid = fopen(file_share, 'w');
+    fprintf(fid_d, [repmat('%15d\t',1,size(share,2)), '\n'], share');
+    fclose(fid);
+else
+    share_today = share(end, 2:4);
+end
+
+%% load stock price
+times = clock;
+tmpTimes = datevec(datenum(times)-1/24/60);
+mins     = tmpTimes(4) * 1e2 + tmpTimes(5);
+%%% 如果时间在休市期间，则用昨日的收盘价来确定今天的目标仓位。
+if mins < 931 || mins > 1500
+    if exist('dir_mkdata', 'var')
+        load([dir_mkdata 'dateList.mat']);
+        load([dir_mkdata 'stkList_num.mat']);
+        load([dir_mkdata 'rawBaseData.mat']);
+        load([dir_mkdata 'tradingStatus.mat']); 
+        price_date = dateList(end);
+        price_mins = 1500;
+        %%%根据rawBaseData 和 alpha信息 构造一个 stockPrice
+        stockPrice = zeros(N_TMPALPHA,3);
+        for i = 1:N_TMPALPHA
+            pStock = str2double(tmpAlphas.textdata{i,1});
+            stockPrice(i,1) = rawBaseData{1,5}(end,pStock);
+            if tradingStatus(end, pStock) == 2
+                stockPrice(i,2) = 0;
+            else
+                stockPrice(i,2) = 1;
+            end
+            stockPrice(i,3) = stkList_num(pStock);
+        end
+        %%%stockPrice构造完毕%%%%%%%%%%%%%%%%
+        load([dir_stockprice num2str(dateList(end)) '\indexPrice_' num2str(price_date) '_' num2str(price_mins) '.mat']);%indexPrice
+    else
+        price_date = ndate;
+        price_mins = mins;
+        load([dir_stockprice 'stockPrice_' num2str(price_date) '_' num2str(price_mins) '.mat']);%stockPrice
+        load([dir_stockprice 'indexPrice_' num2str(price_date) '_' num2str(price_mins) '.mat']);%indexPrice
+    end
+else
+    price_date = ndate;
+    price_mins = mins;
+    load([dir_stockprice 'stockPrice_' num2str(price_date) '_' num2str(price_mins) '.mat']);%stockPrice
+    load([dir_stockprice 'indexPrice_' num2str(price_date) '_' num2str(price_mins) '.mat']);%indexPrice
+end
+
+p300  = find(indexPrice(:,3) == 300);
+p50    = find(indexPrice(:,3) == 16);
+p500  = find(indexPrice(:,3) == 905);
+if isempty(p300)
+    datas      = urlread('http://hq.sinajs.cn/list=s_sh000300');
+    positions  = find(datas == ',');
+    HS300Price = str2double(datas(positions(1)+1:positions(2)-1));
+    fprintf('HS300Price urlread.\n');
+else
+    HS300Price = indexPrice(p300, 1);
+end
+if isempty(p50)
+    datas2     = urlread('http://hq.sinajs.cn/list=s_sh000016');
+    positions2 = find(datas2 == ',');
+    A50Price   = str2double(datas2(positions2(1)+1:positions2(2)-1));
+    fprintf('A50Price urlread.\n');
+else
+    A50Price   = indexPrice(p50, 1);
+end
+if isempty(p500)
+    datas2     = urlread('http://hq.sinajs.cn/list=s_sh000905');
+    positions2 = find(datas2 == ',');
+    ZZ500Price   = str2double(datas2(positions2(1)+1:positions2(2)-1));
+    fprintf('A50Price urlread.\n');
+else
+    ZZ500Price   = indexPrice(p500, 1);
+end
+
+%% load alpha file
+N_STOCK                 = size(stockPrice, 1);
+instrlist                        = zeros(1, N_STOCK);
+instrlist(1:N_STOCK) = stockPrice(1:N_STOCK, 3);
+alphas = zeros(1, N_STOCK);
+if exist(file_alpha, 'file')
+    tmpAlphas  = importdata(file_alpha);
+    N_TMPALPHA = size(tmpAlphas.textdata, 1);
+else
+    fprintf(2, '--->>> alpha file not exist. file = %s.\n', file_alpha);
+    return;
+end
+for ti = 1:N_TMPALPHA
+    inst = tmpAlphas.textdata{ti, 2};
+    inst = str2double(inst(3:8));
+    post = find(stockPrice(:, 3) == inst, 1, 'first');
+    alphas(post) = tmpAlphas.data(ti, 1);
+end
+
+%% load current holding
+currentHoldings = zeros(1, N_STOCK);
+availHoldings   = zeros(1, N_STOCK);
+if exist(file_current, 'file')
+    tmpHoldings = load(file_current);
+else
+    tmpHoldings = 0;
+end
+N_HOLDINGS  = size(tmpHoldings, 1);
+for hi = 1:N_HOLDINGS
+    inst1 = tmpHoldings(hi, 1);
+    post1 = find(stockPrice(:, 3) == inst1, 1, 'first');
+    currentHoldings(1, post1) = tmpHoldings(hi, 2);
+    availHoldings(1, post1)   = tmpHoldings(hi, 3);
+end
+
+%% load add file
+if exist(file_adds, 'file')
+    tmpAdds = load(file_adds);
+    N_ADD   = size(tmpAdds, 1);
+    for adi = 1:N_ADD
+        inst1 = tmpAdds(adi, 1);
+        post1 = find(stockPrice(:, 3) == inst1, 1, 'first');
+        currentHoldings(ai, post1) = currentHoldings(ai, post1) + tmpAdds(adi, 2);
+    end
+end
+
+%% load forbidden file
+forbidden       = zeros(1, N_STOCK);
+if exist(file_co_forbidden, 'file')
+    coForbiddenList = load(file_co_forbidden);
+    N_CF           = size(coForbiddenList, 1);
+end
+for ii = 1:N_CF
+    inst1 = coForbiddenList(ii, 1);
+    post1 = find(stockPrice(:, 3) == inst1, 1, 'first');
+    if (isempty(post1))
+        continue;
+    end
+    forbidden(1, post1) = 1;
+end
+if exist(file_forbidden, 'file')
+    tmpForbiddenList = load(file_forbidden);
+    N_FORBIDDEN      = size(tmpForbiddenList, 1);
+    for ii = 1:N_FORBIDDEN
+        inst1 = tmpForbiddenList(ii, 1);
+        post1 = find(stockPrice(:, 3) == inst1, 1, 'first');
+        if (isempty(post1))
+            continue;
+        end
+        forbidden(1, post1) = 1;
+    end
+end
+
+%% generate money
+fs   = 2.0:-0.01:0;
+N_FS = length(fs);
+
+limitUp  = 1.05;
+limitLow = 1.01;
+targetHoldings = zeros(1, N_STOCK);
+usingMoney     = zeros(1, N_STOCK);
+CAP                 =  limitLow;
+for fi = 1:N_FS
+    stockShares = zeros(N_STOCK, 1);
+    benchMoney  = (HS300Price * share_today(1) - A50Price * share_today(2)) * 300 + ZZ500Price * share_today(3) * 200;
+    money       = benchMoney * fs(fi);
+    money       = fix(money / 1e4) * 1e4;
+    usedMoney   = 0;
+    for ii = 1:N_STOCK
+        if (forbiden(1, ii) == 1)
+            continue;
+        end
+
+        if (stockPrice(ii, 2) == 0)
+            stockShares(ii) = currentHoldings(1, ii);
+        elseif (stockPrice(ii, 2) == 1)
+            stockShares(ii) = money * alphas(ii) / stockPrice(ii, 1);
+            minHoldings     = max(0, currentHoldings(1, ii) - availHoldings(1, ii));
+            stockShares(ii) = max(stockShares(ii), minHoldings);
+            stockShares(ii) = fix(stockShares(ii) / 100) * 100;
+        elseif (stockPrice(ii, 2) == 2)
+            stockShares(ii) = money * alphas(ii) / stockPrice(ii, 1);
+            stockShares(ii) = max(stockShares(ii), currentHoldings(1, ii));
+            stockShares(ii) = fix(stockShares(ii) / 100) * 100;
+        elseif (stockPrice(ii, 2) == 3)
+            % Stop Selling STOCKS HIT LOWER LIMIT (AS SEC CONTROL)
+            stockShares(ii) = currentHoldings(1, ii);
+        end
+
+        if (stockPrice(ii, 2) == 1)
+            usedMoney = usedMoney + stockShares(ii) * stockPrice(ii, 1);
+        else
+            usedMoney = usedMoney + currentHoldings(1, ii) * stockPrice(ii, 1);
+        end
+    end
+
+    if ((usedMoney > benchMoney) && (usedMoney < benchMoney * CAP(1)))
+        selectMoney = money;
+        selectFS    = fs(fi);
+        usingMoney  = usedMoney;
+        for ii = 1:N_STOCK
+            targetHoldings(1, ii) = stockShares(ii);
+        end
+    end
+end
+% 如果cap取下限没有得到逼近结果时，则cap取上限，再来一遍
+if selectFS == 0
+    CAP = limitUp;
+    for fi = 1:N_FS
+        stockShares = zeros(N_STOCK, 1);
+        benchMoney  = (HS300Price * share_today(1) - A50Price * share_today(2)) * 300 + ZZ500Price * share_today(3) * 200;
+        money       = benchMoney * fs(fi);
+        money       = fix(money / 1e4) * 1e4;
+        usedMoney   = 0;
+        for ii = 1:N_STOCK
+            if (forbiden(1, ii) == 1)
+                continue;
+            end
+
+            if (stockPrice(ii, 2) == 0)
+                stockShares(ii) = currentHoldings(1, ii);
+            elseif (stockPrice(ii, 2) == 1)
+                stockShares(ii) = money * alphas(ii) / stockPrice(ii, 1);
+                minHoldings     = max(0, currentHoldings(1, ii) - availHoldings(1, ii));
+                stockShares(ii) = max(stockShares(ii), minHoldings);
+                stockShares(ii) = fix(stockShares(ii) / 100) * 100;
+            elseif (stockPrice(ii, 2) == 2)
+                stockShares(ii) = money * alphas(ii) / stockPrice(ii, 1);
+                stockShares(ii) = max(stockShares(ii), currentHoldings(1, ii));
+                stockShares(ii) = fix(stockShares(ii) / 100) * 100;
+            elseif (stockPrice(ii, 2) == 3)
+                % Stop Selling STOCKS HIT LOWER LIMIT (AS SEC CONTROL)
+                stockShares(ii) = currentHoldings(1, ii);
+            end
+
+            if (stockPrice(ii, 2) == 1)
+                usedMoney = usedMoney + stockShares(ii) * stockPrice(ii, 1);
+            else
+                usedMoney = usedMoney + currentHoldings(1, ii) * stockPrice(ii, 1);
+            end
+        end
+        if ((usedMoney > benchMoney) && (usedMoney < benchMoney * CAP))
+            selectMoney = money;
+            selectFS    = fs(fi);
+            usingMoney  = usedMoney;
+            for ii = 1:N_STOCK
+                targetHoldings(1, ii) = stockShares(ii);
+            end
+        end
+    end
+end
+
+%% write into target files
+op_file = fopen([dir_strategy 'size.' num2str(date)], 'w');
+fprintf(op_file, '%10d',date);
+fprintf(op_file, '%20d%10d',selectMoney(1), share);
+fprintf(op_file, '\n');
+fclose(op_file);
+
+dir_target = [dir_current AccountInfo{i}.NAME sdate '\'];
+if exist(dir_target, 'dir')
+else
+    mkdir(dir_target);
+end
+op_file = fopen([dir_target 'target_holding.txt'], 'w');
+for ii = 1:N_STOCK
+    fprintf(op_file, '%10d%20d\n', instrlist(ii), targetHoldings(si, ii));
+end
+fclose(op_file);

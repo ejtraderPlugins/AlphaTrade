@@ -1,13 +1,24 @@
-function ParseTmp2CurrHolding_xuntou(AccountInfo, i)
+function ParseTmp2CurrHolding_xuntou(AccountInfo, id)
+numOfAccount = length(AccountInfo);
+for ai = 1:numOfAccount
+    if str2double(numOfAccount{ai}.ID) == id
+        break;
+    end
+end
+
 times = clock;
 ndate = times(1) * 1e4 + times(2) * 1e2 + times(3);
 sdate = num2str(ndate);
-path = [AccountInfo{i}.LOGPATH AccountInfo{i}.NAME '\'];
-sourceFile = [path sdate '\stock_holding.txt'];
-destFile = [path sdate '\current_holding.txt'];
+
+path_log = [AccountInfo{ai}.LOGPATH AccountInfo{ai}.NAME '\'];
+path_goal = [AccountInfo{ai}.GOALPATH 'currentHolding\' AccountInfo{ai}.NAME '\'];
+path_source = [path_log sdate '\'];
+path_dest = [path_goal sdate '\'];
+sourceFile = [path_source 'stock_holding.txt'];
+destFile = [path_dest 'current_holding.txt'];
+unit = str2double(AccountInfo{ai}.UNIT);
 
 %% parse holding log file
-unit = str2double(AccountInfo{i}.UNIT);
 fid_s = fopen(sourceFile, 'r');
 if fid_s > 0
     rawData = textscan(fid_s, '%s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s','delimiter','\t');
@@ -26,6 +37,10 @@ if fid_s > 0
     fclose(fid_s);
 end
 
+if exist(path_dest, 'dir')
+else
+    mkdir(path_dest);
+end
 if exist('holding','var')
     if ~isempty(holding)
         fid_d = fopen(destFile,'w');

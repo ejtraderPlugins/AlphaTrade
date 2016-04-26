@@ -3,7 +3,7 @@
 <account_config>
 
 <accounts>
-	<account id='1' name='SHUNSHI_DAHUA' status='on' date='20150403' client='xuntou' unit='1'>
+	<account id='1' name='SHUNSHI_DAHUA' status='off' date='20150403' client='xuntou' unit='1'>
 		<pathes>
 			<path flag='logpath'>E:\Chn_Stocks_Trading_System\Trade_Logs\</path>
 			<path flag='goalpath'>E:\Chn_Stocks_Trading_System\Trade_Goals\</path>
@@ -14,7 +14,7 @@
 		</pathes>
 	</account>
 
-	<account id='2' name='SHUNSHI_DAHUA' status='on' date='20150403' client='xuntou' unit='1'>
+	<account id='2' name='SHUNSHI_DAHUA' status='off' date='20150403' client='xuntou' unit='1'>
 		<pathes>
 			<path flag='logpath'>E:\Chn_Stocks_Trading_System\Trade_Logs\</path>
 			<path flag='goalpath'>E:\Chn_Stocks_Trading_System\Trade_Goals\</path>
@@ -25,7 +25,7 @@
 		</pathes>
 	</account>
 	
-	<account id='3' name='DERUN_GUOLIAN' status='on' date='20150409' client='zhongxin' unit='1'>
+	<account id='3' name='DERUN_GUOLIAN' status='off' date='20150409' client='tdx' unit='1'>
 		<pathes>
 			<path flag='logpath'>E:\Chn_Stocks_Trading_System\Trade_Logs\</path>
 			<path flag='goalpath'>E:\Chn_Stocks_Trading_System\Trade_Goals\</path>
@@ -36,7 +36,7 @@
 		</pathes>
 	</account>
 	
-	<account id='4' name='ZQIN_HUABAO' status='on' date='20150514' client='winner' unit='1'>
+	<account id='4' name='ZQIN_HUABAO' status='off' date='20150514' client='winner' unit='1'>
 		<pathes>
 			<path flag='logpath'>E:\Chn_Stocks_Trading_System\Trade_Logs\</path>
 			<path flag='goalpath'>E:\Chn_Stocks_Trading_System\Trade_Goals\</path>
@@ -47,7 +47,7 @@
 		</pathes>
 	</account>
 	
-	<account id='5' name='HANDE_GUANTONG' status='on' date='20150602' client='zhongxin' unit='1'>
+	<account id='5' name='HANDE_GUANTONG' status='off' date='20150602' client='tdx' unit='1'>
 		<pathes>
 			<path flag='logpath'>E:\Chn_Stocks_Trading_System\Trade_Logs\</path>
 			<path flag='goalpath'>E:\Chn_Stocks_Trading_System\Trade_Goals\</path>
@@ -58,7 +58,7 @@
 		</pathes>
 	</account>
 	
-	<account id='6' name='HANTAK_GUOXIN' status='on' date='20151013' client='xuntou' unit='1'>
+	<account id='6' name='HANTAK_GUOXIN' status='off' date='20151013' client='xuntou' unit='1'>
 		<pathes>
 			<path flag='logpath'>E:\Chn_Stocks_Trading_System\Trade_Logs\</path>
 			<path flag='goalpath'>E:\Chn_Stocks_Trading_System\Trade_Goals\</path>
@@ -69,7 +69,7 @@
 		</pathes>
 	</account>
 	
-	<account id='7' name='CHUANJIABAO_GUOTAI' status='on' date='20161013' client='zhongxin' unit='1'>
+	<account id='7' name='CHUANJIABAO_GUOTAI' status='off' date='20161013' client='tdx' unit='1'>
 		<pathes>
 			<path flag='logpath'>E:\Chn_Stocks_Trading_System\Trade_Logs\</path>
 			<path flag='goalpath'>E:\Chn_Stocks_Trading_System\Trade_Goals\</path>
@@ -80,7 +80,7 @@
 		</pathes>
 	</account>
 
-	<account id='8' name='DEBEN_HUATAI' status='on' date='20160105' client='xuntou' unit='100'>
+	<account id='8' name='DEBEN_HUATAI' status='off' date='20160105' client='xuntou' unit='100'>
 		<pathes>
 			<path flag='logpath'>E:\Chn_Stocks_Trading_System\Trade_Logs\</path>
 			<path flag='goalpath'>E:\Chn_Stocks_Trading_System\Trade_Goals\</path>
@@ -91,7 +91,7 @@
 		</pathes>
 	</account>
 
-	<account id='9' name='JINQU_DONGHANG' status='on' date='20160114' client='a8' unit='1'>
+	<account id='9' name='JINQU_DONGHANG' status='off' date='20160114' client='a8' unit='1'>
 		<pathes>
 			<path flag='logpath'>E:\Chn_Stocks_Trading_System\Trade_Logs\</path>
 			<path flag='goalpath'>E:\Chn_Stocks_Trading_System\Trade_Goals\</path>
@@ -99,6 +99,30 @@
 			<path flag='cleandatapath'>E:\CleanData\</path>
 			<path flag='reportresultdatapath'>E:\ReportResultData\</path>
 			<path flag='lastpricepath'>E:\Chn_Stocks_Trading_System\DailyReport\ReportData\LastPrice\</path>
+		</pathes>
+	</account>
+	
+	<account id='10' name='ZHONGJIN_JINRUI' status='off' date='20160426' client='ims' unit='1'>
+		<pathes>
+			<path flag='logpath'>E:\Chn_Stocks_Trading_System\Trade_Logs\</path>
+			<path flag='goalpath'>E:\Chn_Stocks_Trading_System\Trade_Goals\</path>
+			<path flag='indexlogpath'>E:\Chn_Stocks_Trading_System\IndexTradeLogs\</path>
+			<path flag='cleandatapath'>E:\CleanData\</path>
+			<path flag='reportresultdatapath'>E:\ReportResultData\</path>
+			<path flag='lastpricepath'>E:\Chn_Stocks_Trading_System\DailyReport\ReportData\LastPrice\</path>
+		</pathes>
+	</account>
+	
+	<account id='11' name='HAIXIN_HAITONG' status='on' date='20160426' client='hundsun' unit='1'>
+		<pathes>
+			<path flag='logpath'>E:\Chn_Stocks_Trading_System\Trade_Logs\</path>
+			<path flag='goalpath'>E:\Chn_Stocks_Trading_System\Trade_Goals\</path>
+			<path flag='indexlogpath'>E:\Chn_Stocks_Trading_System\IndexTradeLogs\</path>
+			<path flag='cleandatapath'>E:\CleanData\</path>
+			<path flag='reportresultdatapath'>E:\ReportResultData\</path>
+			<path flag='lastpricepath'>E:\Chn_Stocks_Trading_System\DailyReport\ReportData\LastPrice\</path>
+			<path flag='stockpricepath'>\\192.168.1.109\Chn_Stocks_Trading_System\Trade_Goals\stockStrategy\</path>
+			<path flag='marketdatapath'>\\192.168.1.109\Chn_Stocks_Trading_System\ProductionData\matdata_8\</path>
 		</pathes>
 	</account>
 </accounts>
