@@ -102,7 +102,7 @@
 		</pathes>
 	</account>
 	
-	<account id='10' name='ZHONGJIN_JINRUI' status='off' date='20160426' client='ims' unit='1'>
+	<account id='10' name='ZHONGJIN_JINRUI' status='on' date='20160426' client='ims' unit='1'>
 		<pathes>
 			<path flag='logpath'>E:\Chn_Stocks_Trading_System\Trade_Logs\</path>
 			<path flag='goalpath'>E:\Chn_Stocks_Trading_System\Trade_Goals\</path>

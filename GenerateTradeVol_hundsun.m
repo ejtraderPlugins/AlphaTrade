@@ -44,7 +44,7 @@ for i = 1:numOfTicker
     if isempty(pC)
         unionHolding(i,3) = 0;
     else
-        unionHolding(i,3) = cHolding(pC, 3);
+        unionHolding(i,3) = cHolding(pC, 2);
     end
 end
 diffHolding = [unionHolding(:,1) unionHolding(:,2) - unionHolding(:,3)];

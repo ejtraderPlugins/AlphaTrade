@@ -2,7 +2,7 @@ function TradeProcess(AccountInfo)
 numAccount = length(AccountInfo);
 selectMoney = zeros(1, numAccount);
 usingMoney  = zeros(1, numAccount);
-share             = zeros(1, numAccount);
+Share             = zeros(1, numAccount);
 selectFS       = zeros(1, numAccount);
 CAP              = zeros(1, numAccount);
 
@@ -18,15 +18,15 @@ for i = 1:numAccount
         
         %% generate target holding
         % targetholding 统一放在TradeGoals/（各账号）/的目录下，统一用targetHolding_20160331.txt 文件
-        [selectMoney(j_id), usingMoney(j_id), share(j_id), selectFS(j_id), CAP(j_id)] = GenerateTargetHolding(AccountInfo, j_id);
-        if selectMoney(j_id) * usingMoney(j_id) * share(j_id) * selectFS(j_id) * CAP(j_id) ~= 0
+        [selectMoney(j_id), usingMoney(j_id), Share(j_id), selectFS(j_id), CAP(j_id)] = GenerateTargetHolding(AccountInfo, j_id);
+        if selectMoney(j_id) * usingMoney(j_id) * Share(j_id) * selectFS(j_id) * CAP(j_id) ~= 0
         % generate trade vol, and write vol into files for different client software
         % trade volume统一放在TradeGoals/（各账号）/的目录下，根据client的类型，来具体定制。
-            fprintf(' %25s:\t%20d%20.4f%20d%20.4f%20.4f\n', AccountInfo{j_id}.NAME, selectMoney(j_id), usingMoney(j_id), share(j_id), selectFS(j_id), CAP(j_id));
+            fprintf(' %25s:\t%20d%20.4f%20d%20.4f%20.4f\n', AccountInfo{j_id}.NAME, selectMoney(j_id), usingMoney(j_id), Share(j_id), selectFS(j_id), CAP(j_id));
             GenerateTradeVol(AccountInfo, j_id);
         else
             fprintf(2, '--->>> Generate Targe Wrong. CHECK. AccountName = %s.\n', AccountInfo{j_id}.NAME);
-            fprintf(2, ' %25s:\t%20d%20.4f%20d%20.4f%20.4f\n', AccountInfo{j_id}.NAME, selectMoney(j_id), usingMoney(j_id), shares(j_id), selectFS(j_id), CAP(j_id));
+            fprintf(2, ' %25s:\t%20d%20.4f%20d%20.4f%20.4f\n', AccountInfo{j_id}.NAME, selectMoney(j_id), usingMoney(j_id), Share(j_id), selectFS(j_id), CAP(j_id));
         end
     end
 end

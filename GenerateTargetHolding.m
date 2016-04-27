@@ -242,7 +242,7 @@ for fi = 1:N_FS
         end
     end
 
-    if ((usedMoney > benchMoney) && (usedMoney < benchMoney * CAP(1)))
+    if ((usedMoney > benchMoney) && (usedMoney < benchMoney * CAP))
         selectMoney = money;
         selectFS    = fs(fi);
         usingMoney  = usedMoney;
