@@ -1,10 +1,10 @@
-function [selectMoney, usingMoney, share, selectFS, CAP] = GenerateTargetHolding(AccountInfo, id)
+function [selectMoney, usingMoney, r_share, selectFS, CAP] = GenerateTargetHolding(AccountInfo, id)
 selectMoney = 0;
 usingMoney = 0;
 share_today  = zeros(1,3);
 selectFS = 0;
 CAP = 0;
-share = share_today(1);
+r_share = share_today(1);
 
 times = clock;
 ndate  = times(1) * 1e4 + times(2) * 1e2 + times(3);
@@ -48,12 +48,12 @@ if isempty(ptoday)
     share = [share; [ndate share(end,2:4)]];
     share_today = share(end, 2:4);
     fid = fopen(file_share, 'w');
-    fprintf(fid_d, [repmat('%15d\t',1,size(share,2)), '\n'], share');
+    fprintf(fid, [repmat('%15d\t',1,size(share,2)), '\n'], share');
     fclose(fid);
 else
     share_today = share(end, 2:4);
 end
-share = share_today(1);
+r_share = share_today(1);
 
 %% load stock price
 times = clock;
@@ -301,7 +301,7 @@ end
 %% write into target files
 op_file = fopen([dir_strategy 'size.' sdate], 'w');
 fprintf(op_file, '%10d',ndate);
-fprintf(op_file, '%20d%10d',selectMoney(1), share);
+fprintf(op_file, '%20d%10d',selectMoney(1), r_share);
 fprintf(op_file, '\n');
 fclose(op_file);
 

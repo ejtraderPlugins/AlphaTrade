@@ -39,7 +39,11 @@ unionHolding(:,1) = unionTicker;
 for i = 1:numOfTicker
     pT = find(tHolding(:,1) == unionHolding(i,1), 1, 'first');
     pC = find(cHolding(:,1) == unionHolding(i,1), 1, 'first');
-    unionHolding(i,2) = tHolding(pT, 2);
+    if isempty(pT)
+    unionHolding(i,2) = 0;
+    else
+        unionHolding(i,2) = tHolding(pT, 2);
+    end
     if isempty(pC)
         unionHolding(i,3) = 0;
     else
