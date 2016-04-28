@@ -14,3 +14,5 @@
   share.txt中的第一列是日期，第二列是IF，第三列式IH，第四列式IC的手数
 
 5.  currentHolding\HANDE_GUANTONG\ 路径下，应该有adds.txt/forbidden.txt文件, 在currentHolding/目录下应该有co_forbidden_list.txt和 modle.xlsx
+
+6.ims & hundsun pb 导出csv文件。

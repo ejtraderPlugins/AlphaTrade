@@ -14,32 +14,30 @@ path_log = [AccountInfo{ai}.LOGPATH AccountInfo{ai}.NAME '\'];
 path_goal = [AccountInfo{ai}.GOALPATH 'currentHolding\' AccountInfo{ai}.NAME '\'];
 path_source = [path_log sdate '\'];
 path_dest = [path_goal sdate '\'];
-sourceFile = [path_source 'stock_holding.csv'];
+sourceFile = [path_source 'stock_holding.xls'];
 destFile = [path_dest 'current_holding.txt'];
 unit = str2double(AccountInfo{ai}.UNIT);
 
 %% parse holding log file
-fid_s = fopen(sourceFile, 'r');
-if fid_s > 0
-    rawData = textscan(fid_s, '%s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s','delimiter',',');
-    numOfInst = size(rawData{1,1},1) - 1;
+if exist(sourceFile, 'file')
+    [~, ~, rawData] = xlsread(sourceFile);
+else
+    rawData = [];
+end
+numOfInst = size(rawData,1) - 1;
+if numOfInst > 0
     holding = zeros(numOfInst, 3);
-    tmp = str2double(rawData{1,2});%ticker
-    holding(:,1) = tmp(2:end,1);
-    tmp = str2double(rawData{1,6});%holding
-    holding(:,2) = tmp(2:end,1) * unit;
-    tmp = str2double(rawData{1,8});%today holding
-    holding(:,3) = holding(:,2) - tmp(2:end,1) * unit;%available holding
-
-    for k = 1:size(holding,2)
-        holding(isnan(holding(:,k)),:) = [];
+    for im = 1:numOfInst
+        holding(im,1) = str2double(rawData{im + 1, 2});%ticker
+        holding(im,2) = str2double(rawData{im + 1, 6}) * unit;%vol
+        holding(im,3) = str2double(rawData{im + 1, 9}) * unit;%available vol
     end
-    fclose(fid_s); 
+    holding(isnan(holding(:,1)),:) = [];    
 end
 
-if exist(path_dest,'dir')
+if exist(destPath,'dir')
 else
-    mkdir(path_dest);
+    mkdir(destPath);
 end
 if exist('holding','var')
     if ~isempty(holding)

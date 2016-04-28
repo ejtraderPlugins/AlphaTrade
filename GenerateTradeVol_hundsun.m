@@ -32,15 +32,19 @@ else
 end
 
 %% generate trade vol, and write into trade file
-unionTicker = union(tHolding(:,1), cHolding(1));
+unionTicker = union(tHolding(:,1), cHolding(:,1));
 unionTicker(all(unionTicker == 0, 2), :) = [];
 numOfTicker = size(unionTicker,1);
-unionHolding = zeros(numOfTicker, 4);%第一列是ticker，第二列是target，第三列是current
+unionHolding = zeros(numOfTicker, 3);%第一列是ticker，第二列是target，第三列是current
 unionHolding(:,1) = unionTicker;
 for i = 1:numOfTicker
     pT = find(tHolding(:,1) == unionHolding(i,1), 1, 'first');
     pC = find(cHolding(:,1) == unionHolding(i,1), 1, 'first');
-    unionHolding(i,2) = tHolding(pT, 2);
+    if isempty(pT)
+    unionHolding(i,2) = 0;
+    else
+        unionHolding(i,2) = tHolding(pT, 2);
+    end
     if isempty(pC)
         unionHolding(i,3) = 0;
     else
