@@ -1,4 +1,11 @@
 function AccountInfo = ParseAccountConfig()
+global fid_log
+
+%% log
+[idate,itime] = GetDateTimeNum();
+fprintf(fid_log, '--->>> %s_%s,\t Begin parse account config\n', num2str(idate), num2str(itime));
+
+%% parse config file
 xmlfile = 'AccountConfig.xml';
 xDoc = xmlread(xmlfile);%读取xml文件
 xRoot = xDoc.getDocumentElement();%获取根节点
@@ -32,3 +39,7 @@ for i = 1:numOfAccount
         eval(['AccountInfo{i}.' tag_name '= val;']);
     end
 end
+
+%% end log
+[idate,itime] = GetDateTimeNum();
+fprintf(fid_log, '--->>> %s_%s,\t End parse account config\n', num2str(idate), num2str(itime));

@@ -1,4 +1,6 @@
 function GenerateTradeVol_hundsun(AccountInfo, id)
+global fid_log
+
 numOfAccount = length(AccountInfo);
 for ai = 1:numOfAccount
     if str2double(AccountInfo{ai}.ID) == id
@@ -6,16 +8,16 @@ for ai = 1:numOfAccount
     end
 end
 
-times = clock;
-ndate = times(1) * 10000 + times(2) * 100 + times(3);
-sdate = num2str(ndate);
-path_goal = AccountInfo{ai}.GOALPATH ;
-path_current = [path_goal 'currentHolding\' AccountInfo{ai}.NAME '\' sdate '\'];
+%% log
+[idate, itime] = GetDateTimeNum();
+fprintf(fid_log, '--->>> %s_%s,\t Begin generate trade vol. account = %s.\n', num2str(idate), num2str(itime), AccountInfo{ai}.NAME);
 
-file_target = [path_current 'target_holding.txt'];
-file_current = [path_current 'current_holding.txt'];
-file_trade = [path_current 'trade_holding.txt'];
-file_modle = [path_goal 'currentHolding\' AccountInfo{ai}.NAME '\modle.xlsx'];
+path_account = AccountInfo{ai}.ACCOUNTPATH ;
+
+file_target = [path_account 'target_holding.txt'];
+file_current = [path_account 'current_holding.txt'];
+file_trade = [path_account 'trade_holding.txt'];
+file_modle = [path_account '\modle.xlsx'];
 file_today = [path_current 'trade_p0.xlsx'];
 
 %% load target file
@@ -56,10 +58,14 @@ fid = fopen(file_trade, 'w');
 fprintf(fid, [repmat('%15d\t',1,size(diffHolding,2)), '\n'], diffHolding');
 fclose(fid);
 
+fprintf(fid_log, '--->>> %s_%s,\tWrite trade vol file. file = %s.\n', num2str(idate), num2str(itime), file_trade);
+dst_file_trade = [path_account '\HistoricalTrade\trade_holding_' num2str(idate) '_' num2str(itime) '.txt'];
+CopyFile2HistoryDir(file_trade, dst_file_trade);
+
 %% write into trade files for client
 diffHolding(all(diffHolding(:,2) == 0,2), :) = [];
 numOfTrade = size(diffHolding,1);
-% Title = {'Ticker', 'Name', 'Market', 'BS', 'PriceType', 'Price','Vol', 'Money'};
+
 Ticker = cell(numOfTrade, 1);
 Name = cell(numOfTrade, 1);
 Market = zeros(numOfTrade, 1);
@@ -129,5 +135,14 @@ if copyfile(file_modle, file_today,'f') == 1
     end
     system('taskkill /f /im excel.exe');
 else
-    fprintf(2, '--->>> Copy %s Failed.\n', file_modle);
+    [idate, itime] = GetDateTimeNum();
+    fprintf(fid_log, '--->>> %s_%s,\tError when copy modle file, when generate trade file. account = %s, file = %s.\n', num2str(idate), num2str(itime), AccountInfo{ai}.NAME, file_modle);
 end
+
+[idate, itime] = GetDateTimeNum();
+fprintf(fid_log, '--->>> %s_%s,\tDone write trade file. file = %s.\n', num2str(idate), num2str(itime), file_today);
+dst_file_today = [path_account '\HistoricalTrade\trade_p0_' num2str(idate) '_' num2str(itime) '.txt'];
+CopyFile2HistoryDir(file_today, dst_file_today); 
+    
+[idate, itime] = GetDateTimeNum();
+fprintf(fid_log, '--->>> %s_%s,\t End generate trade vol. account = %s.\n', num2str(idate), num2str(itime), AccountInfo{ai}.NAME);

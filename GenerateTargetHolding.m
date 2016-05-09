@@ -1,14 +1,5 @@
 function [selectMoney, usingMoney, r_share, selectFS, CAP] = GenerateTargetHolding(AccountInfo, id)
-selectMoney = 0;
-usingMoney = 0;
-share_today  = zeros(1,3);
-selectFS = 0;
-CAP = 0;
-r_share = share_today(1);
-
-times = clock;
-ndate  = times(1) * 1e4 + times(2) * 1e2 + times(3);
-sdate = num2str(ndate);
+global fid_log
 
 numOfAccount = length(AccountInfo);
 for ai = 1:numOfAccount
@@ -17,83 +8,60 @@ for ai = 1:numOfAccount
     end
 end
 
-dir_strategy           = [AccountInfo{ai}.GOALPATH 'stockStrategy\'];
-dir_current             = [AccountInfo{ai}.GOALPATH 'currentHolding\'];
-try
-    dir_stockprice = [AccountInfo{ai}.STOCKPRICEPATH '\'];
-    file_alpha         =[AccountInfo{ai}.STOCKPRICEPATH 'alpha.' num2str(ndate)]; 
-catch
-    dir_stockprice  = dir_strategy;
-    file_alpha         = [dir_strategy 'alpha.' num2str(ndate)];
-end
-try
-    dir_mkdata = AccountInfo{ai}.MARKETDATAPATH;
-catch
-end
-file_co_forbidden = [dir_current 'co_forbidden_list.txt'];
-file_share              = [dir_current AccountInfo{ai}.NAME '\share.txt'];
-file_current           = [dir_current AccountInfo{ai}.NAME '\' sdate '\current_holding.txt'];
-file_adds              = [dir_current AccountInfo{ai}.NAME '\' sdate '\adds.txt'];
-file_forbidden      = [dir_current AccountInfo{ai}.NAME '\' sdate '\forbidden.txt'];
+selectMoney = 0;
+usingMoney = 0;
+share_today  = zeros(1,3);
+selectFS = 0;
+CAP = 0;
+r_share = share_today(1);
+
+[idate, itime] = GetDateTime();
+fprintf(fid_log, '--->>> %s_%s,\tBegin generate target holding. account = %s.\n', num2str(idate), num2str(itime), AccountInfo{ai}.NAME);
+
+dir_account   = AccountInfo{ai}.ACCOUNTPATH;
+dir_matprice = AccountInfo{ai}.MATPRICEPATH;
+
+sdate = num2str(idate);
+file_alpha               =[AccountInfo{ai}.ALPHAPATH 'alpha.' sdate]; 
+file_share              = [dir_account AccountInfo{ai}.NAME '\share.txt'];
+file_current           = [dir_account AccountInfo{ai}.NAME '\current_holding.txt'];
+file_adds              = [dir_account AccountInfo{ai}.NAME '\adds.txt'];
+file_forbidden      = [dir_account AccountInfo{ai}.NAME '\forbidden.txt'];
+file_co_forbidden = [dir_account 'co_forbidden_list.txt'];
+
+%% copy to history direction before use
+dst_file_share       = [dir_account AccountInfo{ai}.NAME '\HistoricalShare\share_' num2str(idate) '_' num2str(itime) '.txt'];
+dst_file_adds       = [dir_account AccountInfo{ai}.NAME '\HistoricalAdds\adds_' num2str(idate) '_' num2str(itime) '.txt'];
+dst_file_forbidden = [dir_account AccountInfo{ai}.NAME '\HistoricalForbidden\forbidden_' num2str(idate) '_' num2str(itime) '.txt'];
+dst_file_co_forbidden = [dir_account AccountInfo{ai}.NAME 'HistoricalCoForbidden\co_forbidden_list_' num2str(idate) '_' num2str(itime) '.txt'];
+CopyFile2HisoryDir(file_share, dst_file_share);
+CopyFile2HisoryDir(file_adds, dst_file_adds);
+CopyFile2HisoryDir(file_forbidden, dst_file_forbidden);
+CopyFile2HisoryDir(file_co_forbidden, dst_file_co_forbidden);
 
 %% load share, share(:,1)-> date , share(:,2) -> IF, share(:,3) -> IH, share(:,4) -> IC
 if exist(file_share,'file')
-    share = load(file_share);
-    ptoday = find(share(:,1) == ndate, 1, 'last');
+    share_today = load(file_share);
 else
-    fprintf(2,'--->>> share file not exist. file = %s.\n', file_share);
+    fprintf(fid_log, '--->>> %s_%s,\Error when load share. file = %s.\n', num2str(idate), num2str(itime), file_share);
     return;
-end
-if isempty(ptoday)
-    share = [share; [ndate share(end,2:4)]];
-    share_today = share(end, 2:4);
-    fid = fopen(file_share, 'w');
-    fprintf(fid, [repmat('%15d\t',1,size(share,2)), '\n'], share');
-    fclose(fid);
-else
-    share_today = share(end, 2:4);
 end
 r_share = share_today(1);
 
 %% load stock price
-times = clock;
-tmpTimes = datevec(datenum(times)-1/24/60);
-mins     = tmpTimes(4) * 1e2 + tmpTimes(5);
+[idate,itime] = GetDateTimeNum();
+mins     = rem(itime, 10000);
 %%% 如果时间在休市期间，则用昨日的收盘价来确定今天的目标仓位。
 if mins < 931 || mins > 1500
-    if exist('dir_mkdata', 'var')
-        load([dir_mkdata 'dateList.mat']);
-        load([dir_mkdata 'stkList_num.mat']);
-        load([dir_mkdata 'rawBaseData.mat']);
-        load([dir_mkdata 'tradingStatus.mat']); 
-        price_date = dateList(end);
-        price_mins = 1400;
-        %%%根据rawBaseData 和 当天的stockPrice中的list构造一个新的stockPrice
-        load([dir_stockprice num2str(price_date) '\stockPrice_' num2str(price_date) '_' num2str(price_mins) '.mat']);%stockPrice
-        numOfStock = size(stockPrice,1);
-        price_mins = 1500;
-        for i = 1:numOfStock
-            pStock = find(stockPrice(i,3) == stkList_num, 1, 'first');
-            stockPrice(i,1) = rawBaseData{1,5}(end,pStock);
-            if tradingStatus(end, pStock) == 2
-                stockPrice(i,2) = 0;
-            else
-                stockPrice(i,2) = 1;
-            end
-        end
-        %%%stockPrice构造完毕%%%%%%%%%%%%%%%%
-        load([dir_stockprice num2str(dateList(end)) '\indexPrice_' num2str(price_date) '_' num2str(price_mins) '.mat']);%indexPrice
-    else
-        price_date = ndate;
-        price_mins = mins;
-        load([dir_stockprice num2str(price_date) '\stockPrice_' num2str(price_date) '_' num2str(price_mins) '.mat']);%stockPrice
-        load([dir_stockprice num2str(price_date) '\indexPrice_' num2str(price_date) '_' num2str(price_mins) '.mat']);%indexPrice
-    end
+    fprintf(fid_log, '--->>> %s_%s,\tNot trading time.\n', num2str(idate), num2str(itime));
+    return;
 else
-    price_date = ndate;
+    fprintf(fid_log, '--->>> %s_%s,\t Load price mat file.\n', num2str(idate), num2str(itime));
+    
+    price_date = idate;
     price_mins = mins;
-    load([dir_stockprice num2str(price_date) '\stockPrice_' num2str(price_date) '_' num2str(price_mins) '.mat']);%stockPrice
-    load([dir_stockprice num2str(price_date) '\indexPrice_' num2str(price_date) '_' num2str(price_mins) '.mat']);%indexPrice
+    load([dir_matprice num2str(price_date) '\stockPrice_' num2str(price_date) '_' num2str(price_mins) '.mat']);%stockPrice
+    load([dir_matprice num2str(price_date) '\indexPrice_' num2str(price_date) '_' num2str(price_mins) '.mat']);%indexPrice
 end
 
 p300  = find(indexPrice(:,3) == 300);
@@ -131,7 +99,7 @@ if exist(file_alpha, 'file')
     tmpAlphas  = importdata(file_alpha);
     N_TMPALPHA = size(tmpAlphas.textdata, 1);
 else
-    fprintf(2, '--->>> alpha file not exist. file = %s.\n', file_alpha);
+    fprintf(fid_log, '--->>> %s_%s,\tError when loading alpha file. file = %s.\n', num2str(idate), num2str(itime), file_alpha);
     return;
 end
 for ti = 1:N_TMPALPHA
@@ -298,20 +266,31 @@ if selectFS == 0
     end
 end
 
-%% write into target files
-op_file = fopen([dir_strategy 'size.' sdate], 'w');
-fprintf(op_file, '%10d',ndate);
+%% write into size files
+[idate, itime] = GetDateTimeNum();
+file_size = [dir_account 'size.txt'];
+op_file = fopen(file_size, 'w');
+fprintf(op_file, '%10d',idate);
 fprintf(op_file, '%20d%10d',selectMoney(1), r_share);
 fprintf(op_file, '\n');
 fclose(op_file);
+fprintf(fid_log, '--->>> %s_%s,\tDONE writing size file.\n', num2str(idate), num2str(itime));
 
-dir_target = [dir_current AccountInfo{ai}.NAME '\' sdate '\'];
-if exist(dir_target, 'dir')
-else
-    mkdir(dir_target);
-end
-op_file = fopen([dir_target 'target_holding.txt'], 'w');
+dst_file_size = [dir_account '\HistoricalSize\size_' num2str(idate) '_' num2str(itime) '.txt'];
+CopyFile2HistoryDir(file_size, dst_file_size);
+
+%% write into target files
+[~, itime] = GetDateTimeNum();
+file_target = [dir_account  'target_holding.txt'];
+op_file = fopen(file_target,  'w');
 for ii = 1:N_STOCK
     fprintf(op_file, '%10d%20d\n', instrlist(ii), targetHoldings(1, ii));
 end
 fclose(op_file);
+fprintf(fid_log, '--->>> %s_%s,\tDONE writing target holding file.\n', num2str(idate), num2str(itime));
+
+dst_file_target = [dir_account '\HistoricalTrade\target_holding_' num2str(idate) '_' num2str(itime) '.txt'];
+CopyFile2HistoryDir(file_target, dst_file_target);
+
+[~, itime] = GetDateTime();
+fprintf(fid_log, '--->>> %s_%s,\tEnd generate target holding. account = %s.\n', num2str(idate), num2str(itime), AccountInfo{ai}.NAME);
