@@ -3,7 +3,7 @@ global fid_log
 
 %% log
 [idate,itime] = GetDateTimeNum();
-fprintf(fid_log, '--->>> %s_%s,\t Begin parse account config\n', num2str(idate), num2str(itime));
+fprintf(fid_log, '--->>> %s_%s,\tBegin parse account config.\n', num2str(idate), num2str(itime));
 
 %% parse config file
 xmlfile = 'AccountConfig.xml';
@@ -42,4 +42,4 @@ end
 
 %% end log
 [idate,itime] = GetDateTimeNum();
-fprintf(fid_log, '--->>> %s_%s,\t End parse account config\n', num2str(idate), num2str(itime));
+fprintf(fid_log, '--->>> %s_%s,\tEnd parse account config.\n', num2str(idate), num2str(itime));

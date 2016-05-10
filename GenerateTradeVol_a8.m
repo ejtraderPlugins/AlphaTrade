@@ -1,4 +1,4 @@
-function GenerateTradeVol_ims(AccountInfo, id)
+function GenerateTradeVol_a8(AccountInfo, id)
 global fid_log
 
 numOfAccount = length(AccountInfo);
@@ -10,15 +10,15 @@ end
 
 %% log
 [idate, itime] = GetDateTimeNum();
-fprintf(fid_log, '--->>> %s_%s,\t Begin generate trade vol. account = %s.\n', num2str(idate), num2str(itime), AccountInfo{ai}.NAME);
+fprintf(fid_log, '--->>> %s_%s,\tBegin generate trade vol. account = %s.\n', num2str(idate), num2str(itime), AccountInfo{ai}.NAME);
 
 N_PART = str2double(AccountInfo{ai}.NPART);% 要写成N_PART个篮子文件，在xml中设置
-path_account = AccountInfo{ai}.ACCOUNTPATH ;
+path_account = [AccountInfo{ai}.ACCOUNTPATH AccountInfo{ai}.NAME '\'];
 
 file_target = [path_account 'target_holding.txt'];
 file_current = [path_account 'current_holding.txt'];
 file_trade = [path_account 'trade_holding.txt'];
-file_modle = [path_account '\modle.xlsx'];
+file_modle = [path_account 'modle.xlsx'];
 
 %% load target file
 if exist(file_target, 'file')
@@ -32,6 +32,7 @@ if exist(file_current, 'file')
 else
     cHolding = 0;
 end
+cHolding(all(rem(floor(cHolding(:,1) / 100000), 3) ~= 0, 2),:) = [];
 
 %% generate trade vol, and write into trade file
 unionTicker = union(tHolding(:,1), cHolding(:,1));
@@ -63,7 +64,7 @@ fclose(fid);
 [idate, itime] = GetDateTimeNum();
 fprintf(fid_log, '--->>> %s_%s,\tDONE. Write trade vol file. file = %s.\n', num2str(idate), num2str(itime), file_trade);
 
-dst_file_trade = [path_account '\HistoricalTrade\trade_holding_' num2str(idate) '_' num2str(itime) '.txt'];
+dst_file_trade = [path_account 'HistoricalTrade\trade_holding_' num2str(idate) '_' num2str(itime) '.txt'];
 CopyFile2HistoryDir(file_trade, dst_file_trade);
 
 %% write into trade files for client
@@ -98,7 +99,7 @@ bs = diag(bs);
 bs = (one * bs)';
 bs(:,N_PART+1:end) = [];
 
-child_vol = (dev_vol + rem_vol) . * bs * 100; % 乘以100后变成股数, 并且带有符号
+child_vol = (dev_vol + rem_vol) .* bs * 100; % 乘以100后变成股数, 并且带有符号
 
 % begin to write in parts
 Title = {'Market','Ticker','BS','Vol','Price','PriceType','DeltaPrice'};
@@ -115,6 +116,9 @@ for ipart = 1:N_PART
 	DeltaPrice = zeros(numOfTrade,1);
 	
 	for i = 1:numOfTrade
+        if child_vol(i, ipart) == 0
+            continue;
+        end
 		Ticker{i} = num2str(diffHolding(i,1), '%06d');
 		if diffHolding(i,1) < 600000
 			Market(i) = 0;
@@ -133,7 +137,7 @@ for ipart = 1:N_PART
 		delete(file_today);
 	end
 	if copyfile(file_modle, file_today,'f') == 1
-		if xlswrite(file_today,Title,'SHEET1','A1:G1') == 1
+        if xlswrite(file_today,Title,'SHEET1','A1:G1') == 1
             fprintf('Title DONE.\n');
         else
             fprintf(2,'Title FAILED.\n');
@@ -177,7 +181,7 @@ for ipart = 1:N_PART
 		
 		[idate, itime] = GetDateTimeNum();
 		fprintf(fid_log, '--->>> %s_%s,\tDone write trade file. file = %s.\n', num2str(idate), num2str(itime), file_today);
-		dst_file_today = [path_account '\HistoricalTrade\' file_name '_' num2str(idate) '_' num2str(itime) '.xlsx'];
+		dst_file_today = [path_account 'HistoricalTrade\' file_name '_' num2str(idate) '_' num2str(itime) '.xlsx'];
 		CopyFile2HistoryDir(file_today, dst_file_today); 
 	else
 		[idate, itime] = GetDateTimeNum();
@@ -186,4 +190,4 @@ for ipart = 1:N_PART
 end
     
 [idate, itime] = GetDateTimeNum();
-fprintf(fid_log, '--->>> %s_%s,\t End generate trade vol. account = %s.\n', num2str(idate), num2str(itime), AccountInfo{ai}.NAME);
+fprintf(fid_log, '--->>> %s_%s,\tEnd generate trade vol. account = %s.\n', num2str(idate), num2str(itime), AccountInfo{ai}.NAME);

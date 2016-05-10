@@ -3,7 +3,7 @@ global fid_log
 
 %% log
 [idate, itime] = GetDateTimeNum();
-fprintf(fid_log, '--->>> %s_%s,\t Begin Trade Process.\n', num2str(idate), num2str(itime));
+fprintf(fid_log, '--->>> %s_%s,\tBegin Trade Process.\n', num2str(idate), num2str(itime));
 
 %% trade process
 numAccount = length(AccountInfo);

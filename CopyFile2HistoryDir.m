@@ -25,7 +25,7 @@ fprintf(fid_log, '--->>> %s_%s,\tCopy %s TO %s.\n', num2str(idate), num2str(itim
 if exist(f_src, 'file')
     try
         copyfile(f_src, f_dst);
-        fprintf(fid_log, '--->>> %s,\tDONE. Copy %s TO %s.\n', time_stamp, f_src, f_dst);
+        fprintf(fid_log, '--->>> %s_%s,\tDONE. Copy %s TO %s.\n', num2str(idate), num2str(itime), f_src, f_dst);
     catch
         fprintf(fid_log, '--->>> %s_%s,\tError when copy %s TO %s.\n', num2str(idate), num2str(itime), f_src, f_dst);
     end

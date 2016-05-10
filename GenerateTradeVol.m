@@ -7,5 +7,5 @@ for ai = 1:numOfAccount
 end
 
 ID = str2double(AccountInfo{ai}.ID);
-Client = AccountInfo{ai}.CLIENT;
+Client = AccountInfo{ai}.TRADECLIENT;
 eval(['GenerateTradeVol_' Client '(AccountInfo, ID);']);
