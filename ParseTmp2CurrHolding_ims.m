@@ -13,7 +13,7 @@ fprintf(fid_log, '--->>> %s_%s,\tBegin to parse stock holding file. account = %s
 
 path_source = [AccountInfo{ai}.ACCOUNTPATH AccountInfo{ai}.NAME '\'];
 path_dest     = [AccountInfo{ai}.ACCOUNTPATH  AccountInfo{ai}.NAME '\'];
-sourceFile    = [path_source 'stock_holding.txt'];
+sourceFile    = [path_source 'stock_holding.csv'];
 destFile        = [path_dest 'current_holding.txt'];
 unit = str2double(AccountInfo{ai}.UNIT);
 
@@ -56,7 +56,7 @@ end
 
 %% copy file to history direction
 [idate, itime] = GetDateTimeNum();
-dst_sourceFile    = [path_source 'HistoricalLog\stock_holding_' num2str(idate) '_' num2str(itime) '.txt'];
+dst_sourceFile    = [path_source 'HistoricalLog\stock_holding_' num2str(idate) '_' num2str(itime) '.csv'];
 dst_destFile        = [path_dest '\HistoricalCurrentHolding\current_holding_' num2str(idate) '_' num2str(itime) '.txt'];
 CopyFile2HistoryDir(sourceFile, dst_sourceFile);
 CopyFile2HistoryDir(destFile, dst_destFile);

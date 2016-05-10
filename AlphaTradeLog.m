@@ -6,7 +6,7 @@ else
 end
 
 [idate,~] = GetDateTimeNum();
-file_log = ['./alpha_log.' num2str(idate)];
-mfid_log = fopen(file_log,'w+');
+file_log = [dir_log '/alpha_log.' num2str(idate)];
+mfid_log = fopen(file_log,'a');
 
 fprintf(mfid_log, '-----------------------------------START--------------------------------------\n');
