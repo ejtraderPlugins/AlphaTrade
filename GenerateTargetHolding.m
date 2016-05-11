@@ -24,7 +24,6 @@ dir_matdata = AccountInfo{ai}.MATDATA8PATH;
 
 file_share        = [dir_account 'share.txt'];
 file_current      = [dir_account 'current_holding.txt'];
-file_adds         = [dir_account 'adds.txt'];
 file_forbidden    = [dir_account 'forbidden.txt'];
 file_co_forbidden = [dir_account 'co_forbidden_list.txt'];
 file_dateList     = [dir_matdata 'dateList.mat'];
@@ -35,11 +34,9 @@ file_alpha               =[dir_strategy 'alpha.' alpha_date];
 
 %% copy to history direction before use
 dst_file_share        = [dir_account 'HistoricalShare\share_' num2str(idate) '_' num2str(itime) '.txt'];
-dst_file_adds         = [dir_account 'HistoricalAdds\adds_' num2str(idate) '_' num2str(itime) '.txt'];
 dst_file_forbidden    = [dir_account 'HistoricalForbidden\forbidden_' num2str(idate) '_' num2str(itime) '.txt'];
 dst_file_co_forbidden = [dir_account 'HistoricalCoForbidden\co_forbidden_list_' num2str(idate) '_' num2str(itime) '.txt'];
 CopyFile2HistoryDir(file_share, dst_file_share);
-CopyFile2HistoryDir(file_adds, dst_file_adds);
 CopyFile2HistoryDir(file_forbidden, dst_file_forbidden);
 CopyFile2HistoryDir(file_co_forbidden, dst_file_co_forbidden);
 
@@ -126,17 +123,6 @@ for hi = 1:N_HOLDINGS
     post1 = find(stockPrice(:, 3) == inst1, 1, 'first');
     currentHoldings(1, post1) = tmpHoldings(hi, 2);
     availHoldings(1, post1)   = tmpHoldings(hi, 3);
-end
-
-%% load add file
-if exist(file_adds, 'file')
-    tmpAdds = load(file_adds);
-    N_ADD   = size(tmpAdds, 1);
-    for adi = 1:N_ADD
-        inst1 = tmpAdds(adi, 1);
-        post1 = find(stockPrice(:, 3) == inst1, 1, 'first');
-        currentHoldings(ai, post1) = currentHoldings(ai, post1) + tmpAdds(adi, 2);
-    end
 end
 
 %% load forbidden file

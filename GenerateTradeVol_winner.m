@@ -1,4 +1,4 @@
-function GenerateTradeVol_ims(AccountInfo, id)
+function GenerateTradeVol_a8(AccountInfo, id)
 global fid_log
 
 numOfAccount = length(AccountInfo);
@@ -8,12 +8,16 @@ for ai = 1:numOfAccount
     end
 end
 
-%% log
+%% winner需要先生成LTS的configfile
+GenerateLTSConfigFile(AccountInfo{ai});
+
+%% log of generate trade vol
 [idate, itime] = GetDateTimeNum();
 fprintf(fid_log, '--->>> %s_%s,\tBegin generate trade vol. account = %s.\n', num2str(idate), num2str(itime), AccountInfo{ai}.NAME);
 
 N_PART = str2double(AccountInfo{ai}.NPART);% 要写成N_PART个篮子文件，在xml中设置
 path_account = [AccountInfo{ai}.ACCOUNTPATH AccountInfo{ai}.NAME '\'];
+path_lts = AccountInfo{ai}.LTSPATH;
 
 file_target = [path_account 'target_holding.txt'];
 file_current = [path_account 'current_holding.txt'];
@@ -49,7 +53,7 @@ for i = 1:numOfTicker
     pT = find(tHolding(:,1) == unionHolding(i,1), 1, 'first');
     pC = find(cHolding(:,1) == unionHolding(i,1), 1, 'first');
     if isempty(pT)
-    unionHolding(i,2) = 0;
+		unionHolding(i,2) = 0;
     else
         unionHolding(i,2) = tHolding(pT, 2);
     end
@@ -61,8 +65,8 @@ for i = 1:numOfTicker
 		unionHolding(i,4) = cHolding(pC, 3);
     end
 end
-position = max(unionHolding(:,2), unionHolding(:,3) - unionHolding(:,4));
-diffHolding = [unionHolding(:,1), position - unionHolding(:,3)];
+position_list = [unionHolding(:,1) max(unionHolding(:,2), unionHolding(:,3) - unionHolding(:,4))];
+diffHolding = [unionHolding(:,1) position_list(:,2) - unionHolding(:,3)];
 
 fid = fopen(file_trade, 'w');
 fprintf(fid, [repmat('%15d\t',1,size(diffHolding,2)), '\n'], diffHolding');
@@ -74,82 +78,23 @@ dst_file_trade = [path_account 'HistoricalTrade\trade_holding_' num2str(idate) '
 CopyFile2HistoryDir(file_trade, dst_file_trade);
 
 %% write into trade files for client
-unionHolding(all(diffHolding(:,2) == 0, 2), :) = [];
-diffHolding(all(diffHolding(:,2) == 0,2), :) = [];
-
-% devide into N_PART
-numOfTrade = size(diffHolding,1);
-one = ones(numOfTrade, numOfTrade);
-
-dev_vol = floor(abs(diffHolding(:,2)) / 100 / N_PART);
-rem_vol = rem(floor(abs(diffHolding(:,2) / 100)), N_PART);
-
-dev_vol = diag(dev_vol);
-dev_vol = (one * dev_vol)';
-dev_vol(:,N_PART+1:end) = [];
-
-rem_vol = diag(rem_vol);
-rem_vol = (one * rem_vol)';
-rem_vol(:, N_PART+1:end) = [];
-tmp = 1:N_PART;
-tmp = repmat(tmp, numOfTrade, 1);
-tmp(:, N_PART+1:end) = [];
-rem_vol = ((rem_vol - tmp) >= 0);
-
-bs = abs(diffHolding(:,2)) ./ diffHolding(:,2);
-bs = diag(bs);
-bs = (one * bs)';
-bs(:,N_PART+1:end) = [];
-
-child_vol = (dev_vol + rem_vol) .* bs * 100; % 乘以100后变成股数, 并且带有符号
-
-% begin to write in parts
 [idate, itime] = GetDateTimeNum();
-fprintf('--->>> %s_%s,\tTotal Part = %d. account = %s\n', num2str(idate), num2str(itime), ipart, AccountInfo{ai}.NAME);
-for ipart = 1:N_PART
-	[idate, itime] = GetDateTimeNum();
-	fprintf('--->>> %s_%s,\tGenerate Part %d.\n', num2str(idate), num2str(itime), ipart);
-	fprintf(fid_log, '--->>> %s_%s,\tGenerate Part %d.\n', num2str(idate), num2str(itime), ipart);
+fprintf('--->>> %s_%s,\tBegin generate Position List for LTS. account = %s.\n', num2str(idate), num2str(itime), AccountInfo{ai}.NAME);
 	
-	file_name = ['trade_p' num2str(ipart)];
-	file_today = [path_account file_name '.txt'];
-	
-	fid = fopen(file_today, 'w');
-	if fid > 0
-		PriceType = 'ANY';
-		Price = '0';
-		for i = 1:numOfTrade
-            if child_vol(i, ipart) == 0
-                continue;
-            end
-			if diffHolding(i,1) < 600000
-				Market = '1';
-			else
-				Market = '0';
-			end
-			Ticker = num2str(diffHolding(i,1), '%06d');
-			if child_vol(i,ipart) > 0
-				BS = 'B';
-			elseif child_vol(i,ipart) < 0
-				BS = 'S';
-			end
-			Vol = num2str(abs(child_vol(i,ipart)));
-			
-			lines = [Market '|' Ticker '|' BS '|' '|' PriceType '|' Price '|' Vol '\n'];
-			fprintf(fid, lines);
-		end
-		fclose(fid);
-		
-		[idate, itime] = GetDateTimeNum();
-		fprintf(fid_log, '--->>> %s_%s,\tDone write trade file. file = %s.\n', num2str(idate), num2str(itime), file_today);
-		dst_file_today = [path_account 'HistoricalTrade\' file_name '_' num2str(idate) '_' num2str(itime) '.txt'];
-		CopyFile2HistoryDir(file_today, dst_file_today);   
-	else
-		fprintf(fid_log, '--->>> %s_%s,\tError when write trade file. file = %s.\n', num2str(idate), num2str(itime), file_today);
-		fclose(fid);
-		return;
-	end
+file_name = 'PositionList.txt';
+file_today = [path_lts file_name];
+fid = fopen(file_today, 'w');
+fprintf(fid, '%d\n', numOfTrade);
+position_list = sort(position_list,'descend');
+for i = 1:numOfTrade
+	fprintf(op_file, '%06d%10d%10d%10d%15s%10d\n', diffHolding(i, 1), child_vol(i,ipart), 0, 1, '8:45:40', 384);
 end
+fclose(fid);
+
+[idate, itime] = GetDateTimeNum();
+fprintf(fid_log, '--->>> %s_%s,\tDone write position list for LTS. file = %s, file = \n', num2str(idate), num2str(itime), sfile_today, bfile_today);
+dst_file_today = [path_account 'HistoricalTrade\' file_name '_' num2str(idate) '_' num2str(itime) '.csv'];
+CopyFile2HistoryDir(file_today, dst_file_today); 
 
 [idate, itime] = GetDateTimeNum();
 fprintf(fid_log, '--->>> %s_%s,\tEnd generate trade vol. account = %s.\n', num2str(idate), num2str(itime), AccountInfo{ai}.NAME);

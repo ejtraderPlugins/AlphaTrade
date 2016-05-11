@@ -37,6 +37,12 @@ cHolding(all(rem(floor(cHolding(:,1) / 100000), 3) ~= 0, 2),:) = [];
 %% generate trade vol, and write into trade file
 unionTicker = union(tHolding(:,1), cHolding(:,1));
 unionTicker(all(unionTicker == 0, 2), :) = [];
+if isempty(unionTicker)
+	[idate, itime] = GetDateTimeNum();
+	fprintf(2, '--->>> %s_%s,\tError when generate trade vol. account = %s.\n', num2str(idate), num2str(itime), AccountInfo{ai}.NAME);
+	fprintf(fid_log, '--->>> %s_%s,\tError when generate trade vol. account = %s.\n', num2str(idate), num2str(itime), AccountInfo{ai}.NAME);
+	return;
+end
 numOfTicker = size(unionTicker,1);
 unionHolding = zeros(numOfTicker, 4);%第一列是ticker，第二列是target，第三列是current, 第四列是available
 unionHolding(:,1) = unionTicker;
@@ -56,7 +62,8 @@ for i = 1:numOfTicker
 		unionHolding(i,4) = cHolding(pC, 3);
     end
 end
-diffHolding = [unionHolding(:,1) unionHolding(:,2) - unionHolding(:,3)];
+position = max(unionHolding(:,2), unionHolding(:,3) - unionHolding(:,4));
+diffHolding = [unionHolding(:,1), position - unionHolding(:,3)];
 
 fid = fopen(file_trade, 'w');
 fprintf(fid, [repmat('%15d\t',1,size(diffHolding,2)), '\n'], diffHolding');
@@ -68,11 +75,7 @@ dst_file_trade = [path_account 'HistoricalTrade\trade_holding_' num2str(idate) '
 CopyFile2HistoryDir(file_trade, dst_file_trade);
 
 %% write into trade files for client
-% consider the available holding
 unionHolding(all(diffHolding(:,2) == 0, 2), :) = [];
-diffHolding(all(diffHolding(:,2) == 0,2), :) = [];
-diffHolding(:,2) = min(abs(diffHolding(:,2)), unionHolding(:,3)) .* abs(diffHolding(:,2)) ./ diffHolding(:,2) .* (diffHolding(:,2) < 0)...
-                   + diffHolding(:,2) .* (diffHolding(:,2) > 0);
 diffHolding(all(diffHolding(:,2) == 0,2), :) = [];
 
 % devide into N_PART
@@ -103,7 +106,13 @@ child_vol = (dev_vol + rem_vol) .* bs * 100; % 乘以100后变成股数, 并且带有符号
 
 % begin to write in parts
 Title = {'Market','Ticker','BS','Vol','Price','PriceType','DeltaPrice'};
+[idate, itime] = GetDateTimeNum();
+fprintf('--->>> %s_%s,\tTotal Part = %d. account = %s\n', num2str(idate), num2str(itime), ipart, AccountInfo{ai}.NAME);
 for ipart = 1:N_PART
+	[idate, itime] = GetDateTimeNum();
+	fprintf('--->>> %s_%s,\tGenerate Part %d.\n', num2str(idate), num2str(itime), ipart);
+	fprintf(fid_log, '--->>> %s_%s,\tGenerate Part %d.\n', num2str(idate), num2str(itime), ipart);
+	
 	file_name = ['trade_p' num2str(ipart)];
 	file_today = [path_account file_name '.xlsx'];
 	
@@ -138,45 +147,38 @@ for ipart = 1:N_PART
 	end
 	if copyfile(file_modle, file_today,'f') == 1
         if xlswrite(file_today,Title,'SHEET1','A1:G1') == 1
-            fprintf('Title DONE.\n');
         else
             fprintf(2,'Title FAILED.\n');
         end
 		if xlswrite(file_today, Market, 'SHEET1', 'A2') == 1
-			fprintf('Market Done.\n');
 		else
 			fprintf('Market Failed.\n');
 		end
 		if xlswrite(file_today, Ticker, 'SHEET1', 'B2') == 1
-			fprintf('Ticker Done.\n');
 		else
 			fprintf('Ticker Failed.\n');
 		end
 		if xlswrite(file_today, BS, 'SHEET1', 'C2') == 1
-			fprintf('BS Done.\n');
 		else
 			fprintf('BS Failed.\n');
 		end
 		if xlswrite(file_today, Vol, 'SHEET1', 'D2') == 1
-			fprintf('Vol Done.\n');
 		else
 			fprintf('Vol Failed.\n');
 		end
 		if xlswrite(file_today, Price, 'SHEET1', 'E2') == 1
-			fprintf('Price Done.\n');
 		else
 			fprintf('Price Failed.\n');
 		end
 		if xlswrite(file_today, PriceType, 'SHEET1', 'F2') == 1
-			fprintf('PriceType Done.\n');
 		else
 			fprintf('PriceType Failed.\n');
 		end
 		if xlswrite(file_today, DeltaPrice, 'SHEET1', 'G2') == 1
-			fprintf('DeltaPrice Done.\n');
 		else
 			fprintf('DeltaPrice Failed.\n');
 		end
+		fprintf(2, 'Kill excel thread...\n');
 		system('taskkill /f /im excel.exe');
 		
 		[idate, itime] = GetDateTimeNum();
@@ -191,3 +193,4 @@ end
     
 [idate, itime] = GetDateTimeNum();
 fprintf(fid_log, '--->>> %s_%s,\tEnd generate trade vol. account = %s.\n', num2str(idate), num2str(itime), AccountInfo{ai}.NAME);
+fprintf('--->>> %s_%s,\tEnd generate trade vol. account = %s.\n', num2str(idate), num2str(itime), AccountInfo{ai}.NAME);
