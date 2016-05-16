@@ -5,7 +5,7 @@ global fid_log
 fprintf(fid_log, '--->>> %s_%s,\tBegin generate config file for LTS. account = %s.\n', num2str(idate), num2str(itime), mAccountInfo.NAME);
 fprintf('--->>> %s_%s,\tBegin generate config file for LTS. account = %s.\n', num2str(idate), num2str(itime), mAccountInfo.NAME);
 
-dir_account = [mAccountInfo.ACCOUNTPATH mAccountInfo.NAME '\'];
+dir_account = [mAccountInfo.BASEPATH mAccountInfo.NAME '\'];
 dir_lts   = mAccountInfo.LTSPATH;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -73,7 +73,7 @@ fprintf(op_file, '50\n');
 fprintf(op_file, '10\n');
 fprintf(op_file, '10000\n');
 fprintf(op_file, '1\n');
-fprintf(op_file, [mAccountInfo.ACCOUNTPATH mAccountInfo.NAME '\PositionList.txt\n']);
+fprintf(op_file, [mAccountInfo.BASEPATH mAccountInfo.NAME '\PositionList.txt\n']);
 fprintf(op_file, '%d\n', N_SH);
 fprintf(op_file, '%d\n', N_SZ);
 for ii = 1:N_STOCK

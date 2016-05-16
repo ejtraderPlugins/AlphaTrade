@@ -11,11 +11,12 @@ end
 [idate, itime] = GetDateTimeNum();
 fprintf(fid_log, '--->>> %s_%s,\tBegin to parse stock holding file. account = %s.\n', num2str(idate), num2str(itime), AccountInfo{ai}.NAME);
 
-path_source = [AccountInfo{ai}.ACCOUNTPATH AccountInfo{ai}.NAME '\'];
-path_dest     = [AccountInfo{ai}.ACCOUNTPATH  AccountInfo{ai}.NAME '\'];
-sourceFile    = [path_source 'stock_holding.csv'];
-destFile        = [path_dest 'current_holding.txt'];
-file_split        = [path_source 'split.txt'];
+path_source = [AccountInfo{ai}.BASEPATH AccountInfo{ai}.NAME '\'];
+path_dest   = [AccountInfo{ai}.BASEPATH  AccountInfo{ai}.NAME '\'];
+path_com    = [AccountInfo{ai}.BASEPATH 'com_data\'];
+sourceFile  = [path_source 'stock_holding.csv'];
+destFile    = [path_dest 'current_holding.txt'];
+file_split  = [path_com 'split.txt'];
 unit = str2double(AccountInfo{ai}.UNIT);
 
 %% load split files

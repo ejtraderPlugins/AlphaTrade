@@ -13,12 +13,12 @@ end
 fprintf(fid_log, '--->>> %s_%s,\tBegin generate trade vol. account = %s.\n', num2str(idate), num2str(itime), AccountInfo{ai}.NAME);
 
 N_PART = str2double(AccountInfo{ai}.NPART);% 要写成N_PART个篮子文件，在xml中设置
-path_account = [AccountInfo{ai}.ACCOUNTPATH AccountInfo{ai}.NAME '\'];
+path_account = [AccountInfo{ai}.BASEPATH AccountInfo{ai}.NAME '\'];
 
 file_target = [path_account 'target_holding.txt'];
 file_current = [path_account 'current_holding.txt'];
 file_trade = [path_account 'trade_holding.txt'];
-file_modle = [AccountInfo{ai}.ACCOUNTPATH 'modle.xlsx'];
+file_modle = [AccountInfo{ai}.BASEPATH 'com_data\modle.xlsx'];
 
 %% load target file
 if exist(file_target, 'file')

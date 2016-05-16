@@ -18,7 +18,7 @@ r_share = share_today(1);
 [idate, itime] = GetDateTimeNum();
 fprintf(fid_log, '--->>> %s_%s,\tBegin generate target holding. account = %s.\n', num2str(idate), num2str(itime), AccountInfo{ai}.NAME);
 
-dir_account = [AccountInfo{ai}.ACCOUNTPATH AccountInfo{ai}.NAME '\'];
+dir_account = [AccountInfo{ai}.BASEPATH AccountInfo{ai}.NAME '\'];
 dir_strategy = AccountInfo{ai}.STRATEGYPATH;
 dir_matdata = AccountInfo{ai}.MATDATA8PATH;
 

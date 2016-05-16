@@ -15,7 +15,7 @@ GenerateLTSConfigFile(AccountInfo{ai});
 [idate, itime] = GetDateTimeNum();
 fprintf(fid_log, '--->>> %s_%s,\tBegin generate trade vol. account = %s.\n', num2str(idate), num2str(itime), AccountInfo{ai}.NAME);
 
-path_account = [AccountInfo{ai}.ACCOUNTPATH AccountInfo{ai}.NAME '\'];
+path_account = [AccountInfo{ai}.BASEPATH AccountInfo{ai}.NAME '\'];
 path_lts = AccountInfo{ai}.LTSPATH;
 
 file_target = [path_account 'target_holding.txt'];

@@ -3,11 +3,11 @@
 <account_config>
 
 <accounts>
-	<account id='1' name='SHUNSHI_DAHUA' status='off' date='20150403' logclient='xuntou' tradeclient='xuntou' unit='1' npart='3'>
+	<account id='1' name='SHUNSHI_DAHUA' status='off' date='20150403' logclient='xuntou' tradeclient='xuntou' unit='1' npart='1'>
 		<pathes>
-			<path flag='accountpath'>E:\Chn_Stocks_Trading_System\AlphaTrade\</path>
-			<path flag='strategypath'>E:\Chn_Stocks_Trading_System\Trade_Goals\stockStrategy\</path>
-			<path flag='matdata8path'>E:\Chn_Stocks_Trading_System\ProductionData\matdata_8\</path>
+			<path flag='basepath'>E:\Chn_Stocks_Trading_System\AlphaTrade\</path>
+			<path flag='strategypath'>\\192.168.1.109\Chn_Stocks_Trading_System\Trade_Goals\stockStrategy\</path>
+			<path flag='matdata8path'>\\192.168.1.109\Chn_Stocks_Trading_System\ProductionData\matdata_8\</path>
 			<path flag='indexlogpath'>E:\Chn_Stocks_Trading_System\IndexTradeLogs\</path>
 			<path flag='cleandatapath'>E:\CleanData\</path>
 			<path flag='reportresultdatapath'>E:\ReportResultData\</path>
@@ -15,11 +15,11 @@
 		</pathes>
 	</account>
 
-	<account id='2' name='SHUNSHI_DAHUA' status='off' date='20150403' logclient='xuntou' tradeclient='xuntou' unit='1' npart='3'>
+	<account id='2' name='SHUNSHI_DAHUA' status='off' date='20150403' logclient='xuntou' tradeclient='xuntou' unit='1' npart='1'>
 		<pathes>
-			<path flag='accountpath'>E:\Chn_Stocks_Trading_System\AlphaTrade\</path>
-			<path flag='strategypath'>E:\Chn_Stocks_Trading_System\Trade_Goals\stockStrategy\</path>
-			<path flag='matdata8path'>E:\Chn_Stocks_Trading_System\ProductionData\matdata_8\</path>
+			<path flag='basepath'>E:\Chn_Stocks_Trading_System\AlphaTrade\</path>
+			<path flag='strategypath'>\\192.168.1.109\Chn_Stocks_Trading_System\Trade_Goals\stockStrategy\</path>
+			<path flag='matdata8path'>\\192.168.1.109\Chn_Stocks_Trading_System\ProductionData\matdata_8\</path>
 			<path flag='indexlogpath'>E:\Chn_Stocks_Trading_System\IndexTradeLogs\</path>
 			<path flag='cleandatapath'>E:\CleanData\</path>
 			<path flag='reportresultdatapath'>E:\ReportResultData\</path>
@@ -27,11 +27,11 @@
 		</pathes>
 	</account>
 	
-	<account id='3' name='DERUN_GUOLIAN' status='off' date='20150409' logclient='tdx' tradeclient='a8' unit='1' npart='3'>
+	<account id='3' name='DERUN_GUOLIAN' status='off' date='20150409' logclient='tdx' tradeclient='a8' unit='1' npart='1'>
 		<pathes>
-			<path flag='accountpath'>E:\Chn_Stocks_Trading_System\AlphaTrade\</path>
-			<path flag='strategypath'>E:\Chn_Stocks_Trading_System\Trade_Goals\stockStrategy\</path>
-			<path flag='matdata8path'>E:\Chn_Stocks_Trading_System\ProductionData\matdata_8\</path>
+			<path flag='basepath'>E:\Chn_Stocks_Trading_System\AlphaTrade\</path>
+			<path flag='strategypath'>\\192.168.1.109\Chn_Stocks_Trading_System\Trade_Goals\stockStrategy\</path>
+			<path flag='matdata8path'>\\192.168.1.109\Chn_Stocks_Trading_System\ProductionData\matdata_8\</path>
 			<path flag='indexlogpath'>E:\Chn_Stocks_Trading_System\IndexTradeLogs\</path>
 			<path flag='cleandatapath'>E:\CleanData\</path>
 			<path flag='reportresultdatapath'>E:\ReportResultData\</path>
@@ -41,7 +41,7 @@
 	
 	<account id='4' name='ZQIN_HUABAO' status='off' date='20150514' logclient='winner' tradeclient='winner' unit='1' front='tcp://10.200.52.14:24513' broker='2011' capital='050000006200' pswd='1170015' npart='1'>
 		<pathes>
-			<path flag='accountpath'>E:\Chn_Stocks_Trading_System\AlphaTrade\</path>
+			<path flag='basepath'>E:\Chn_Stocks_Trading_System\AlphaTrade\</path>
 			<path flag='strategypath'>\\192.168.1.109\Chn_Stocks_Trading_System\Trade_Goals\stockStrategy\</path>
 			<path flag='matdata8path'>\\192.168.1.109\Chn_Stocks_Trading_System\ProductionData\matdata_8\</path>
 			<path flag='ltspath'>\\192.168.1.109\Chn_Stocks_Trading_System\Execution\ZQIN_HUABAO\</path>
@@ -52,9 +52,9 @@
 		</pathes>
 	</account>
 	
-	<account id='5' name='HANDE_GUANTONG' status='on' date='20150602' logclient='tdx' tradeclient='a8' unit='1' npart='3'>
+	<account id='5' name='HANDE_GUANTONG' status='off' date='20150602' logclient='tdx' tradeclient='a8' unit='1' npart='1'>
 		<pathes>
-			<path flag='accountpath'>E:\Chn_Stocks_Trading_System\AlphaTrade\</path>
+			<path flag='basepath'>E:\Chn_Stocks_Trading_System\AlphaTrade\</path>
 			<path flag='strategypath'>\\192.168.1.109\Chn_Stocks_Trading_System\Trade_Goals\stockStrategy\</path>
 			<path flag='matdata8path'>\\192.168.1.109\Chn_Stocks_Trading_System\ProductionData\matdata_8\</path>
 			<path flag='indexlogpath'>E:\Chn_Stocks_Trading_System\IndexTradeLogs\</path>
@@ -64,11 +64,11 @@
 		</pathes>
 	</account>
 	
-	<account id='6' name='HANTAK_GUOXIN' status='off' date='20151013' logclient='xuntou' tradeclient='xuntou' unit='1' npart='3'>
+	<account id='6' name='HANTAK_GUOXIN' status='off' date='20151013' logclient='xuntou' tradeclient='xuntou' unit='1' npart='1'>
 		<pathes>
-			<path flag='accountpath'>E:\Chn_Stocks_Trading_System\AlphaTrade\</path>
-			<path flag='strategypath'>E:\Chn_Stocks_Trading_System\Trade_Goals\stockStrategy\</path>
-			<path flag='matdata8path'>E:\Chn_Stocks_Trading_System\ProductionData\matdata_8\</path>
+			<path flag='basepath'>E:\Chn_Stocks_Trading_System\AlphaTrade\</path>
+			<path flag='strategypath'>\\192.168.1.109\Chn_Stocks_Trading_System\Trade_Goals\stockStrategy\</path>
+			<path flag='matdata8path'>\\192.168.1.109\Chn_Stocks_Trading_System\ProductionData\matdata_8\</path>
 			<path flag='indexlogpath'>E:\Chn_Stocks_Trading_System\IndexTradeLogs\</path>
 			<path flag='cleandatapath'>E:\CleanData\</path>
 			<path flag='reportresultdatapath'>E:\ReportResultData\</path>
@@ -76,11 +76,11 @@
 		</pathes>
 	</account>
 	
-	<account id='7' name='CHUANJIABAO_GUOTAI' status='off' date='20161013' logclient='tdx' tradeclient='a8' unit='1' npart='3'>
+	<account id='7' name='CHUANJIABAO_GUOTAI' status='off' date='20161013' logclient='tdx' tradeclient='a8' unit='1' npart='1'>
 		<pathes>
-			<path flag='accountpath'>E:\Chn_Stocks_Trading_System\AlphaTrade\</path>
-			<path flag='strategypath'>E:\Chn_Stocks_Trading_System\Trade_Goals\stockStrategy\</path>
-			<path flag='matdata8path'>E:\Chn_Stocks_Trading_System\ProductionData\matdata_8\</path>
+			<path flag='basepath'>E:\Chn_Stocks_Trading_System\AlphaTrade\</path>
+			<path flag='strategypath'>\\192.168.1.109\Chn_Stocks_Trading_System\Trade_Goals\stockStrategy\</path>
+			<path flag='matdata8path'>\\192.168.1.109\Chn_Stocks_Trading_System\ProductionData\matdata_8\</path>
 			<path flag='indexlogpath'>E:\Chn_Stocks_Trading_System\IndexTradeLogs\</path>
 			<path flag='cleandatapath'>E:\CleanData\</path>
 			<path flag='reportresultdatapath'>E:\ReportResultData\</path>
@@ -88,11 +88,11 @@
 		</pathes>
 	</account>
 
-	<account id='8' name='DEBEN_HUATAI' status='off' date='20160105' logclient='xuntou' tradeclient='xuntou' unit='100' npart='3'>
+	<account id='8' name='DEBEN_HUATAI' status='off' date='20160105' logclient='xuntou' tradeclient='xuntou' unit='100' npart='1'>
 		<pathes>
-			<path flag='accountpath'>E:\Chn_Stocks_Trading_System\AlphaTrade\</path>
-			<path flag='strategypath'>E:\Chn_Stocks_Trading_System\Trade_Goals\stockStrategy\</path>
-			<path flag='matdata8path'>E:\Chn_Stocks_Trading_System\ProductionData\matdata_8\</path>
+			<path flag='basepath'>E:\Chn_Stocks_Trading_System\AlphaTrade\</path>
+			<path flag='strategypath'>\\192.168.1.109\Chn_Stocks_Trading_System\Trade_Goals\stockStrategy\</path>
+			<path flag='matdata8path'>\\192.168.1.109\Chn_Stocks_Trading_System\ProductionData\matdata_8\</path>
 			<path flag='indexlogpath'>E:\Chn_Stocks_Trading_System\IndexTradeLogs\</path>
 			<path flag='cleandatapath'>E:\CleanData\</path>
 			<path flag='reportresultdatapath'>E:\ReportResultData\</path>
@@ -100,11 +100,11 @@
 		</pathes>
 	</account>
 
-	<account id='9' name='JINQU_DONGHANG' status='off' date='20160114' logclient='a8' tradeclient='a8' unit='1' npart='3'>
+	<account id='9' name='JINQU_DONGHANG' status='off' date='20160114' logclient='a8' tradeclient='a8' unit='1' npart='1'>
 		<pathes>
-			<path flag='accountpath'>E:\Chn_Stocks_Trading_System\AlphaTrade\</path>
-			<path flag='strategypath'>E:\Chn_Stocks_Trading_System\Trade_Goals\stockStrategy\</path>
-			<path flag='matdata8path'>E:\Chn_Stocks_Trading_System\ProductionData\matdata_8\</path>
+			<path flag='basepath'>E:\Chn_Stocks_Trading_System\AlphaTrade\</path>
+			<path flag='strategypath'>\\192.168.1.109\Chn_Stocks_Trading_System\Trade_Goals\stockStrategy\</path>
+			<path flag='matdata8path'>\\192.168.1.109\Chn_Stocks_Trading_System\ProductionData\matdata_8\</path>
 			<path flag='indexlogpath'>E:\Chn_Stocks_Trading_System\IndexTradeLogs\</path>
 			<path flag='cleandatapath'>E:\CleanData\</path>
 			<path flag='reportresultdatapath'>E:\ReportResultData\</path>
@@ -112,11 +112,11 @@
 		</pathes>
 	</account>
 	
-	<account id='10' name='ZHONGJIN_JINRUI' status='off' date='20160426' logclient='ims' tradeclient='ims' unit='1' npart='3'>
+	<account id='10' name='ZHONGHANG_DONGHANG' status='off' date='20160114' logclient='a8' tradeclient='a8' unit='1' npart='1'>
 		<pathes>
-			<path flag='accountpath'>E:\Chn_Stocks_Trading_System\AlphaTrade\</path>
-			<path flag='strategypath'>E:\Chn_Stocks_Trading_System\Trade_Goals\stockStrategy\</path>
-			<path flag='matdata8path'>E:\Chn_Stocks_Trading_System\ProductionData\matdata_8\</path>
+			<path flag='basepath'>E:\Chn_Stocks_Trading_System\AlphaTrade\</path>
+			<path flag='strategypath'>\\192.168.1.109\Chn_Stocks_Trading_System\Trade_Goals\stockStrategy\</path>
+			<path flag='matdata8path'>\\192.168.1.109\Chn_Stocks_Trading_System\ProductionData\matdata_8\</path>
 			<path flag='indexlogpath'>E:\Chn_Stocks_Trading_System\IndexTradeLogs\</path>
 			<path flag='cleandatapath'>E:\CleanData\</path>
 			<path flag='reportresultdatapath'>E:\ReportResultData\</path>
@@ -124,17 +124,39 @@
 		</pathes>
 	</account>
 	
-	<account id='11' name='HAIXIN_HAITONG' status='off' date='20160426' logclient='hundsun' tradeclient='hundsun' unit='1' npart='3'>
+	<account id='11' name='ZHONGJIN_JINRUI' status='off' date='20160426' logclient='ims' tradeclient='ims' unit='1' npart='1'>
 		<pathes>
-			<path flag='accountpath'>E:\Chn_Stocks_Trading_System\AlphaTrade\</path>
-			<path flag='strategypath'>E:\Chn_Stocks_Trading_System\Trade_Goals\stockStrategy\</path>
-			<path flag='matdata8path'>E:\Chn_Stocks_Trading_System\ProductionData\matdata_8\</path>
+			<path flag='basepath'>E:\Chn_Stocks_Trading_System\AlphaTrade\</path>
+			<path flag='strategypath'>\\192.168.1.109\Chn_Stocks_Trading_System\Trade_Goals\stockStrategy\</path>
+			<path flag='matdata8path'>\\192.168.1.109\Chn_Stocks_Trading_System\ProductionData\matdata_8\</path>
 			<path flag='indexlogpath'>E:\Chn_Stocks_Trading_System\IndexTradeLogs\</path>
 			<path flag='cleandatapath'>E:\CleanData\</path>
 			<path flag='reportresultdatapath'>E:\ReportResultData\</path>
 			<path flag='lastpricepath'>E:\Chn_Stocks_Trading_System\DailyReport\ReportData\LastPrice\</path>
-			<path flag='stockpricepath'>\\192.168.1.109\Chn_Stocks_Trading_System\Trade_Goals\stockStrategy\</path>
-			<path flag='marketdatapath'>\\192.168.1.109\Chn_Stocks_Trading_System\ProductionData\matdata_8\</path>
+		</pathes>
+	</account>
+	
+	<account id='12' name='HAIXIN_HAITONG' status='off' date='20160426' logclient='hundsun' tradeclient='hundsun' unit='1' npart='1'>
+		<pathes>
+			<path flag='basepath'>E:\Chn_Stocks_Trading_System\AlphaTrade\</path>
+			<path flag='strategypath'>\\192.168.1.109\Chn_Stocks_Trading_System\Trade_Goals\stockStrategy\</path>
+			<path flag='matdata8path'>\\192.168.1.109\Chn_Stocks_Trading_System\ProductionData\matdata_8\</path>
+			<path flag='indexlogpath'>E:\Chn_Stocks_Trading_System\IndexTradeLogs\</path>
+			<path flag='cleandatapath'>E:\CleanData\</path>
+			<path flag='reportresultdatapath'>E:\ReportResultData\</path>
+			<path flag='lastpricepath'>E:\Chn_Stocks_Trading_System\DailyReport\ReportData\LastPrice\</path>
+		</pathes>
+	</account>
+	
+	<account id='13' name='DONGFANG_DONGZHENG' status='on' date='20160504' logclient='hundsun' tradeclient='hundsun' unit='1' npart='1'>
+		<pathes>
+			<path flag='basepath'>E:\Chn_Stocks_Trading_System\AlphaTrade\</path>
+			<path flag='strategypath'>\\192.168.1.109\Chn_Stocks_Trading_System\Trade_Goals\stockStrategy\</path>
+			<path flag='matdata8path'>\\192.168.1.109\Chn_Stocks_Trading_System\ProductionData\matdata_8\</path>
+			<path flag='indexlogpath'>E:\Chn_Stocks_Trading_System\IndexTradeLogs\</path>
+			<path flag='cleandatapath'>E:\CleanData\</path>
+			<path flag='reportresultdatapath'>E:\ReportResultData\</path>
+			<path flag='lastpricepath'>E:\Chn_Stocks_Trading_System\DailyReport\ReportData\LastPrice\</path>
 		</pathes>
 	</account>
 </accounts>
