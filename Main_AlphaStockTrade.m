@@ -12,6 +12,6 @@ TradeProcess(AccountInfo);
 
 %% end log
 [idate, itime] = GetDateTimeNum();
-fprintf('--->>> %s_%s,\tEnd generate trade files.\n', num2str(idate), num2str(itime));
-fprintf(fid_log, '--->>> %s_%s,\tEnd generate trade files.\n', num2str(idate), num2str(itime));
+fprintf('\n--->>> %s_%s,\tEnd generate all accounts trade files.\n', num2str(idate), num2str(itime));
+fprintf(fid_log, '\n--->>> %s_%s,\tEnd generate all accounts trade files.\n', num2str(idate), num2str(itime));
 fclose(fid_log);

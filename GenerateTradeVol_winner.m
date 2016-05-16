@@ -1,4 +1,4 @@
-function GenerateTradeVol_a8(AccountInfo, id)
+function GenerateTradeVol_winner(AccountInfo, id)
 global fid_log
 
 numOfAccount = length(AccountInfo);
@@ -15,7 +15,6 @@ GenerateLTSConfigFile(AccountInfo{ai});
 [idate, itime] = GetDateTimeNum();
 fprintf(fid_log, '--->>> %s_%s,\tBegin generate trade vol. account = %s.\n', num2str(idate), num2str(itime), AccountInfo{ai}.NAME);
 
-N_PART = str2double(AccountInfo{ai}.NPART);% 要写成N_PART个篮子文件，在xml中设置
 path_account = [AccountInfo{ai}.ACCOUNTPATH AccountInfo{ai}.NAME '\'];
 path_lts = AccountInfo{ai}.LTSPATH;
 
@@ -67,6 +66,8 @@ for i = 1:numOfTicker
 end
 position_list = [unionHolding(:,1) max(unionHolding(:,2), unionHolding(:,3) - unionHolding(:,4))];
 diffHolding = [unionHolding(:,1) position_list(:,2) - unionHolding(:,3)];
+diffHolding(all(diffHolding(:,2) == 0,2),:) = [];
+numOfTrade = size(diffHolding,1);
 
 fid = fopen(file_trade, 'w');
 fprintf(fid, [repmat('%15d\t',1,size(diffHolding,2)), '\n'], diffHolding');
@@ -87,12 +88,12 @@ fid = fopen(file_today, 'w');
 fprintf(fid, '%d\n', numOfTrade);
 position_list = sort(position_list,'descend');
 for i = 1:numOfTrade
-	fprintf(op_file, '%06d%10d%10d%10d%15s%10d\n', diffHolding(i, 1), child_vol(i,ipart), 0, 1, '8:45:40', 384);
+	fprintf(fid, '%06d%10d%10d%10d%15s%10d\n', position_list(i, 1), position_list(i,2), 0, 1, '8:45:40', 384);
 end
 fclose(fid);
 
 [idate, itime] = GetDateTimeNum();
-fprintf(fid_log, '--->>> %s_%s,\tDone write position list for LTS. file = %s, file = \n', num2str(idate), num2str(itime), sfile_today, bfile_today);
+fprintf(fid_log, '--->>> %s_%s,\tDone write position list for LTS. file = %s.\n', num2str(idate), num2str(itime), file_today);
 dst_file_today = [path_account 'HistoricalTrade\' file_name '_' num2str(idate) '_' num2str(itime) '.csv'];
 CopyFile2HistoryDir(file_today, dst_file_today); 
 

@@ -13,7 +13,7 @@ fprintf(fid_log, '--->>> %s_%s,\tBegin to parse stock holding file. account = %s
 
 path_source = [AccountInfo{ai}.ACCOUNTPATH AccountInfo{ai}.NAME '\'];
 path_dest   = [AccountInfo{ai}.ACCOUNTPATH AccountInfo{ai}.NAME '\'];
-sourceFile  = [path_source 'stock_holding.txt'];
+sourceFile  = [path_source 'stock_holding.csv'];
 destFile    = [path_dest 'current_holding.txt'];
 file_split  = [path_source 'split.txt'];
 unit = str2double(AccountInfo{ai}.UNIT);
@@ -29,7 +29,7 @@ if fid_s > 0
     [idate, itime] = GetDateTimeNum();
     fprintf(fid_log, '--->>> %s_%s,\tBegin to parse holding file. file = %s.\n', num2str(idate), num2str(itime), sourceFile);
     
-    rawData = textscan(fid_s, '%s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s','delimiter',',');
+    rawData = textscan(fid_s, '%s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s','delimiter',',');
     numOfInst = size(rawData{1,1},1) - 2;
     holding = zeros(numOfInst, 3);
     for i = 1:numOfInst
@@ -55,10 +55,10 @@ end
 if exist('holding','var')
     if ~isempty(holding)
 		if exist('split', 'var')
-			[co_ticker, pSplit, pHolding] = intersect(holding(:,1), split(:,1));
+			[co_ticker, pHolding, pSplit] = intersect(holding(:,1), split(:,1));
 			if isempty(co_ticker)
 			else
-				holding(pHolding,2) = holding(pHolding,2) + split(pSplit,2);
+				holding(pHolding,2) = holding(pHolding,2) .* (1 + split(pSplit,2));
 			end
 		end
         fid_d = fopen(destFile,'w');

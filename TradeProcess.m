@@ -29,10 +29,12 @@ for i = 1:numAccount
         if selectMoney(j_id) * usingMoney(j_id) * Share(j_id) * selectFS(j_id) * CAP(j_id) ~= 0
         % generate trade vol, and write vol into files for different client software
         % trade volume统一放在TradeGoals/（各账号）/的目录下，根据client的类型，来具体定制。
-            fprintf(' %25s:\t%20d%20.4f%20d%20.4f%20.4f\n', AccountInfo{j_id}.NAME, selectMoney(j_id), usingMoney(j_id), Share(j_id), selectFS(j_id), CAP(j_id));
+            fprintf(2, ' %25s:\t%20d%20.4f%20d%20.4f%20.4f\n', AccountInfo{j_id}.NAME, selectMoney(j_id), usingMoney(j_id), Share(j_id), selectFS(j_id), CAP(j_id));
             GenerateTradeVol(AccountInfo, j_id);
         else
-            fprintf(2, '--->>> Generate Targe Wrong. CHECK. AccountName = %s.\n', AccountInfo{j_id}.NAME);
+            [idate, itime] = GetDateTimeNum();
+            fprintf(2, '--->>> %s_%s,\tError when generating target holding. account = %s.\n', num2str(idate), num2str(itime), AccountInfo{j_id}.NAME);
+            fprintf(fid_log, '--->>> %s_%s,\tError when generating target holding. account = %s.\n', AccountInfo{j_id}.NAME);
             fprintf(2, ' %25s:\t%20d%20.4f%20d%20.4f%20.4f\n', AccountInfo{j_id}.NAME, selectMoney(j_id), usingMoney(j_id), Share(j_id), selectFS(j_id), CAP(j_id));
         end
     end

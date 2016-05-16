@@ -3,7 +3,7 @@ global fid_log
 
 numOfAccount = length(AccountInfo);
 for ai = 1:numOfAccount
-    if str2double(numOfAccount{ai}.ID) == id
+    if str2double(AccountInfo{ai}.ID) == id
         break;
     end
 end
@@ -39,9 +39,7 @@ if fid_s > 0
     tmp = str2double(rawData{1,15});%available holding
     holding(:,3) = tmp(2:end,1);
 
-    for k = 1:size(holding,2)
-        holding(isnan(holding(:,k)),:) = [];
-    end
+    holding(any(isnan(holding),2),:) = [];
     fclose(fid_s);
 else
     fprintf(fid_log, '--->>> %s_%s,\tError when open holding file. file = %s.\n', num2str(idate), num2str(itime), sourceFile);
@@ -54,10 +52,10 @@ end
 if exist('holding','var')
     if ~isempty(holding)
 		if exist('split', 'var')
-			[co_ticker, pSplit, pHolding] = intersect(holding(:,1), split(:,1));
+			[co_ticker, pHolding, pSplit] = intersect(holding(:,1), split(:,1));
 			if isempty(co_ticker)
 			else
-				holding(pHolding,2) = holding(pHolding,2) + split(pSplit,2);
+				holding(pHolding,2) = holding(pHolding,2) .* (1 + split(pSplit,2));
 			end
 		end
 		fid_d = fopen(destFile,'w');

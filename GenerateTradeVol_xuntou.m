@@ -1,4 +1,4 @@
-function GenerateTradeVol_a8(AccountInfo, id)
+function GenerateTradeVol_xuntou(AccountInfo, id)
 global fid_log
 
 numOfAccount = length(AccountInfo);
@@ -74,7 +74,6 @@ dst_file_trade = [path_account 'HistoricalTrade\trade_holding_' num2str(idate) '
 CopyFile2HistoryDir(file_trade, dst_file_trade);
 
 %% write into trade files for client
-unionHolding(all(diffHolding(:,2) == 0, 2), :) = [];
 diffHolding(all(diffHolding(:,2) == 0,2), :) = [];
 
 % devide into N_PART
@@ -106,31 +105,31 @@ child_vol = (dev_vol + rem_vol) .* bs * 100; % 乘以100后变成股数, 并且带有符号
 % begin to write in parts
 stock_name = '中航重机';
 [idate, itime] = GetDateTimeNum();
-fprintf('--->>> %s_%s,\tTotal Part = %d. account = %s\n', num2str(idate), num2str(itime), ipart, AccountInfo{ai}.NAME);
+fprintf('--->>> %s_%s,\tTotal Part = %d. account = %s\n', num2str(idate), num2str(itime), N_PART, AccountInfo{ai}.NAME);
 for ipart = 1:N_PART
 	[idate, itime] = GetDateTimeNum();
 	fprintf('--->>> %s_%s,\tGenerate Part %d.\n', num2str(idate), num2str(itime), ipart);
 	fprintf(fid_log, '--->>> %s_%s,\tGenerate Part %d.\n', num2str(idate), num2str(itime), ipart);
 	
 	sfile_name = ['trade_sell_p' num2str(ipart)];% sell file
-	bfile_name = ['trade_sell_p' num2str(ipart)];% buy file
-	sfile_today = [path_account file_name '.csv'];
-	bfile_today = [path_account file_name '.csv'];
+	bfile_name = ['trade_buy_p' num2str(ipart)];% buy file
+	sfile_today = [path_account sfile_name '.csv'];
+	bfile_today = [path_account bfile_name '.csv'];
 	sfid = fopen(sfile_today, 'w');
 	bfid = fopen(bfile_today, 'w');
 	
-	for i = 1:numOfTrade
-		if child_vol(i,ipart) < 0
-			fprintf(sfid, '%d,%s,%d,%f,%d\n', diffHolding(i,1), stock_name, abs(child_vol(i,ipart), 0.014, 1);
+    for i = 1:numOfTrade
+        if child_vol(i,ipart) < 0
+			fprintf(sfid, '%d,%s,%d,%f,%d\n', diffHolding(i,1), stock_name, abs(child_vol(i,ipart)), 0.014, 1);
 		elseif child_vol(i,ipart) > 0
-			fprintf(bfid, '%d,%s,%d,%f,%d\n', diffHolding(i,1), stock_name, abs(child_vol(i,ipart), 0.014, 1);
-		end
-		fclose(sfid);
-		fclose(bfid);
-	end
+			fprintf(bfid, '%d,%s,%d,%f,%d\n', diffHolding(i,1), stock_name, abs(child_vol(i,ipart)), 0.014, 1);
+        end
+    end
+    fclose(sfid);
+    fclose(bfid);
 	
 	[idate, itime] = GetDateTimeNum();
-	fprintf(fid_log, '--->>> %s_%s,\tDone write trade file. file = %s, file = \n', num2str(idate), num2str(itime), sfile_today, bfile_today);
+	fprintf(fid_log, '--->>> %s_%s,\tDone write trade file. file = %s, file = %s.\n', num2str(idate), num2str(itime), sfile_today, bfile_today);
 	dst_sfile_today = [path_account 'HistoricalTrade\' sfile_name '_' num2str(idate) '_' num2str(itime) '.csv'];
 	dst_bfile_today = [path_account 'HistoricalTrade\' bfile_name '_' num2str(idate) '_' num2str(itime) '.csv'];
 	CopyFile2HistoryDir(sfile_today, dst_sfile_today); 

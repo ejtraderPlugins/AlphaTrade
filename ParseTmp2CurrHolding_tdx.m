@@ -86,10 +86,10 @@ end
 if exist('holding','var')
     if ~isempty(holding)
 		if exist('split', 'var')
-			[co_ticker, pSplit, pHolding] = intersect(holding(:,1), split(:,1));
+			[co_ticker, pHolding, pSplit] = intersect(holding(:,1), split(:,1));
 			if isempty(co_ticker)
 			else
-				holding(pHolding,2) = holding(pHolding,2) + split(pSplit,2);
+				holding(pHolding,2) = holding(pHolding,2) .* (1 + split(pSplit,2));
 			end
 		end
         fid_d = fopen(destFile,'w');

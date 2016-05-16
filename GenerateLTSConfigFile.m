@@ -2,8 +2,8 @@ function GenerateLTSConfigFile(mAccountInfo)
 global fid_log
 
 [idate, itime] = GetDateTimeNum();
-fprintf(fid_log, '--->>> %s_%s,\tBegin generate config file for LTS. account = %s.\n', num2str(idate), num2str(itime), AccountInfo{ai}.NAME);
-fprintf('--->>> %s_%s,\tBegin generate config file for LTS. account = %s.\n', num2str(idate), num2str(itime), AccountInfo{ai}.NAME);
+fprintf(fid_log, '--->>> %s_%s,\tBegin generate config file for LTS. account = %s.\n', num2str(idate), num2str(itime), mAccountInfo.NAME);
+fprintf('--->>> %s_%s,\tBegin generate config file for LTS. account = %s.\n', num2str(idate), num2str(itime), mAccountInfo.NAME);
 
 dir_account = [mAccountInfo.ACCOUNTPATH mAccountInfo.NAME '\'];
 dir_lts   = mAccountInfo.LTSPATH;
@@ -13,29 +13,11 @@ dir_lts   = mAccountInfo.LTSPATH;
 % dir_lts = 'E:\Chn_Stocks_Trading_System\Execution\ZQIN_HUABAO\';
 file_at      = [dir_lts 'At.config'];
 file_md      = [dir_lts 'Md.config'];
-file_target  = [dir_account 'target_holding.txt'];
-file_current = [dir_account 'current_holding.txt'];
-file_adds    = [dir_account 'adds.txt'];
 
 target_holdings = load([dir_account 'target_holding.txt']);
-current_holdings = load([dir_account 'currentHoldings_' num2str(date) '.txt']);
+current_holdings = load([dir_account 'current_holding.txt']);
 N_STOCK = size(target_holdings, 1);
 N_CURRENT = size(current_holdings, 1);
-
-
-if (exist(adds_files, 'file') == 2)
-    tmpAdds = load(adds_files);
-    N_ADD   = size(tmpAdds, 1);
-    for adi = 1:N_ADD
-        inst1 = tmpAdds(adi, 1);
-        post1 = find(current_holdings(:, 1) == inst1, 1, 'first');
-        if (isempty(post1))
-            continue
-        end
-        
-        current_holdings(post1, 2) = current_holdings(post1, 2) + tmpAdds(adi, 2);
-    end
-end
 
 for ii = 1:N_CURRENT
     post = find(target_holdings(1:N_STOCK, 1) == current_holdings(ii, 1), 1, 'first');
@@ -91,7 +73,7 @@ fprintf(op_file, '50\n');
 fprintf(op_file, '10\n');
 fprintf(op_file, '10000\n');
 fprintf(op_file, '1\n');
-fprintf(op_file, 'E:\\\\Chn_Stocks_Trading_System\\\\Trade_Goals\\\\currentHolding\\\\ZQIN_HUABAO\\\\PositionList.txt\n');
+fprintf(op_file, [mAccountInfo.ACCOUNTPATH mAccountInfo.NAME '\PositionList.txt\n']);
 fprintf(op_file, '%d\n', N_SH);
 fprintf(op_file, '%d\n', N_SZ);
 for ii = 1:N_STOCK
@@ -151,5 +133,5 @@ fclose(op_file);
 
 
 [idate, itime] = GetDateTimeNum();
-fprintf(fid_log, '--->>> %s_%s,\tEnd generate config file for LTS. account = %s.\n', num2str(idate), num2str(itime), AccountInfo{ai}.NAME);
-fprintf('--->>> %s_%s,\tEnd generate config file for LTS. account = %s.\n', num2str(idate), num2str(itime), AccountInfo{ai}.NAME);
+fprintf(fid_log, '--->>> %s_%s,\tEnd generate config file for LTS. account = %s.\n', num2str(idate), num2str(itime), mAccountInfo.NAME);
+fprintf('--->>> %s_%s,\tEnd generate config file for LTS. account = %s.\n', num2str(idate), num2str(itime), mAccountInfo.NAME);

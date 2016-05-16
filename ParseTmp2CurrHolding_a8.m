@@ -13,7 +13,7 @@ fprintf(fid_log, '--->>> %s_%s,\tBegin to parse stock holding file. account = %s
 
 path_source = [AccountInfo{ai}.ACCOUNTPATH AccountInfo{ai}.NAME '\'];
 path_dest   = [AccountInfo{ai}.ACCOUNTPATH AccountInfo{ai}.NAME '\'];
-sourceFile  = [path_source 'stock_holding.txt'];
+sourceFile  = [path_source 'stock_holding.xlsx'];
 destFile    = [path_dest 'current_holding.txt'];
 file_split  = [path_source 'split.txt'];
 unit = str2double(AccountInfo{ai}.UNIT);
@@ -37,7 +37,7 @@ if exist(sourceFile, 'file')
             holding(im,2) = rawData{im + 2, 5}(1) * unit;%vol
             holding(im,3) = holding(im,2) - rawData{im + 2, 10}(1) * unit;%available vol
         end
-        holding(isnan(holding(:,1)),:) = [];    
+        holding(any(isnan(holding),2),:) = [];    
     end
 else
     [idate, itime] = GetDateTimeNum();
@@ -51,10 +51,10 @@ end
 if exist('holding','var')
     if ~isempty(holding)
 		if exist('split', 'var')
-			[co_ticker, pSplit, pHolding] = intersect(holding(:,1), split(:,1));
+			[co_ticker, pHolding, pSplit] = intersect(holding(:,1), split(:,1));
 			if isempty(co_ticker)
 			else
-				holding(pHolding,2) = holding(pHolding,2) + split(pSplit,2);
+				holding(pHolding,2) = holding(pHolding,2) .* (1 + split(pSplit,2));
 			end
 		end
         fid_d = fopen(destFile,'w');

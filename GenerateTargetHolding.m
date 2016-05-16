@@ -30,11 +30,11 @@ file_dateList     = [dir_matdata 'dateList.mat'];
 
 load(file_dateList);%dateList
 alpha_date = num2str(dateList(end));
-file_alpha               =[dir_strategy 'alpha.' alpha_date]; 
+file_alpha   = [dir_strategy 'alpha.' alpha_date]; 
 
 %% copy to history direction before use
-dst_file_share        = [dir_account 'HistoricalShare\share_' num2str(idate) '_' num2str(itime) '.txt'];
-dst_file_forbidden    = [dir_account 'HistoricalForbidden\forbidden_' num2str(idate) '_' num2str(itime) '.txt'];
+dst_file_share            = [dir_account 'HistoricalShare\share_' num2str(idate) '_' num2str(itime) '.txt'];
+dst_file_forbidden      = [dir_account 'HistoricalForbidden\forbidden_' num2str(idate) '_' num2str(itime) '.txt'];
 dst_file_co_forbidden = [dir_account 'HistoricalCoForbidden\co_forbidden_list_' num2str(idate) '_' num2str(itime) '.txt'];
 CopyFile2HistoryDir(file_share, dst_file_share);
 CopyFile2HistoryDir(file_forbidden, dst_file_forbidden);
@@ -53,15 +53,32 @@ r_share = share_today(1);
 [idate,itime] = GetDateTimeNum();
 mins     = floor(itime / 100);
 if mins < 931 || mins > 1500
-    fprintf(fid_log, '--->>> %s_%s,\tNot trading time.\n', num2str(idate), num2str(itime));
+    fprintf(2, '--->>> %s_%s,\tError when loading price mat file. error = not trading time.\n', num2str(idate), num2str(itime));
+    fprintf(fid_log, '--->>> %s_%s,\tError when loading price mat file. error = not trading time.\n', num2str(idate), num2str(itime));
     return;
 else
     fprintf(fid_log, '--->>> %s_%s,\tLoad price mat file.\n', num2str(idate), num2str(itime));
     
     price_date = idate;
     price_mins = mins;
-    load([dir_strategy num2str(price_date) '\stockPrice_' num2str(price_date) '_' num2str(price_mins) '.mat']);%stockPrice
-    load([dir_strategy num2str(price_date) '\indexPrice_' num2str(price_date) '_' num2str(price_mins) '.mat']);%indexPrice
+    file_price_stock = [dir_strategy num2str(price_date) '\stockPrice_' num2str(price_date) '_' num2str(price_mins) '.mat'];
+    file_price_index = [dir_strategy num2str(price_date) '\indexPrice_' num2str(price_date) '_' num2str(price_mins) '.mat'];
+    n_try = 0;
+    while ~exist(file_price_stock, 'file') || ~exist(file_price_index, 'file')
+        pause(2);
+        n_try = n_try + 1;
+        [idate, itime] = GetDateTimeNum();
+        fprintf('--->>> %s_%s,\tWaiting for price mat file from LTS. try = %d. price-file = %s.\n', num2str(idate), num2str(itime), n_try, file_price_stock);
+        fprintf(fid_log, '--->>> %s_%s,\tWaiting for price mat file from LTS. try = %d. price-file = %s.\n', num2str(idate), num2str(itime), n_try, file_price_stock);
+        if n_try == 60
+            [idate, itime] = GetDateTimeNum();
+            fprintf(2, '--->>> %s_%s,\tError when getting price mat file from LTS. price-file = %s.\n', num2str(idate), num2str(itime), file_price_stock);
+            fprintf(fid_log, '--->>> %s_%s,\tError when getting price mat file from LTS. price-file = %s.\n', num2str(idate), num2str(itime), file_price_stock);
+            return;
+        end
+    end   
+    load(file_price_stock);%stockPrice
+    load(file_price_index);%indexPrice
 end
 
 p300  = find(indexPrice(:,3) == 300);
@@ -114,15 +131,14 @@ currentHoldings = zeros(1, N_STOCK);
 availHoldings   = zeros(1, N_STOCK);
 if exist(file_current, 'file')
     tmpHoldings = load(file_current);
-else
-    tmpHoldings = 0;
-end
-N_HOLDINGS  = size(tmpHoldings, 1);
-for hi = 1:N_HOLDINGS
-    inst1 = tmpHoldings(hi, 1);
-    post1 = find(stockPrice(:, 3) == inst1, 1, 'first');
-    currentHoldings(1, post1) = tmpHoldings(hi, 2);
-    availHoldings(1, post1)   = tmpHoldings(hi, 3);
+
+    N_HOLDINGS  = size(tmpHoldings, 1);
+    for hi = 1:N_HOLDINGS
+        inst1 = tmpHoldings(hi, 1);
+        post1 = find(stockPrice(:, 3) == inst1, 1, 'first');
+        currentHoldings(1, post1) = tmpHoldings(hi, 2);
+        availHoldings(1, post1)   = tmpHoldings(hi, 3);
+    end
 end
 
 %% load forbidden file

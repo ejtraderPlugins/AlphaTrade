@@ -74,7 +74,6 @@ dst_file_trade = [path_account 'HistoricalTrade\trade_holding_' num2str(idate) '
 CopyFile2HistoryDir(file_trade, dst_file_trade);
 
 %% write into trade files for client
-unionHolding(all(diffHolding(:,2) == 0, 2), :) = [];
 diffHolding(all(diffHolding(:,2) == 0,2), :) = [];
 
 % devide into N_PART
@@ -105,7 +104,7 @@ child_vol = (dev_vol + rem_vol) .* bs * 100; % 乘以100后变成股数, 并且带有符号
 
 % begin to write in parts
 [idate, itime] = GetDateTimeNum();
-fprintf('--->>> %s_%s,\tTotal Part = %d. account = %s\n', num2str(idate), num2str(itime), ipart, AccountInfo{ai}.NAME);
+fprintf('--->>> %s_%s,\tTotal Part = %d. account = %s\n', num2str(idate), num2str(itime), N_PART, AccountInfo{ai}.NAME);
 for ipart = 1:N_PART
 	[idate, itime] = GetDateTimeNum();
 	fprintf('--->>> %s_%s,\tGenerate Part %d.\n', num2str(idate), num2str(itime), ipart);

@@ -18,7 +18,7 @@ path_account = [AccountInfo{ai}.ACCOUNTPATH AccountInfo{ai}.NAME '\'];
 file_target = [path_account 'target_holding.txt'];
 file_current = [path_account 'current_holding.txt'];
 file_trade = [path_account 'trade_holding.txt'];
-file_modle = [path_account 'modle.xlsx'];
+file_modle = [AccountInfo{ai}.ACCOUNTPATH 'modle.xlsx'];
 
 %% load target file
 if exist(file_target, 'file')
@@ -75,7 +75,6 @@ dst_file_trade = [path_account 'HistoricalTrade\trade_holding_' num2str(idate) '
 CopyFile2HistoryDir(file_trade, dst_file_trade);
 
 %% write into trade files for client
-unionHolding(all(diffHolding(:,2) == 0, 2), :) = [];
 diffHolding(all(diffHolding(:,2) == 0,2), :) = [];
 
 % devide into N_PART
@@ -107,7 +106,7 @@ child_vol = (dev_vol + rem_vol) .* bs * 100; % 乘以100后变成股数, 并且带有符号
 % begin to write in parts
 Title = {'Market','Ticker','BS','Vol','Price','PriceType','DeltaPrice'};
 [idate, itime] = GetDateTimeNum();
-fprintf('--->>> %s_%s,\tTotal Part = %d. account = %s\n', num2str(idate), num2str(itime), ipart, AccountInfo{ai}.NAME);
+fprintf('--->>> %s_%s,\tTotal Part = %d. account = %s\n', num2str(idate), num2str(itime), N_PART, AccountInfo{ai}.NAME);
 for ipart = 1:N_PART
 	[idate, itime] = GetDateTimeNum();
 	fprintf('--->>> %s_%s,\tGenerate Part %d.\n', num2str(idate), num2str(itime), ipart);
@@ -116,6 +115,13 @@ for ipart = 1:N_PART
 	file_name = ['trade_p' num2str(ipart)];
 	file_today = [path_account file_name '.xlsx'];
 	
+    tmpTicker = diffHolding(:,1);
+    tmpVol = child_vol(:,ipart);
+    
+    tmpVol(tmpVol == 0,:) = [];
+    tmpTicker(all(child_vol(:,ipart)==0,2),:) = [];
+    numOfTrade = length(tmpTicker);
+    
 	Market = zeros(numOfTrade, 1);
 	Ticker = cell(numOfTrade, 1);
 	BS = cell(numOfTrade, 1);
@@ -124,71 +130,67 @@ for ipart = 1:N_PART
 	PriceType = ones(numOfTrade, 1) * 5;
 	DeltaPrice = zeros(numOfTrade,1);
 	
-	for i = 1:numOfTrade
-        if child_vol(i, ipart) == 0
-            continue;
-        end
-		Ticker{i} = num2str(diffHolding(i,1), '%06d');
-		if diffHolding(i,1) < 600000
+    for i = 1:numOfTrade
+		Ticker{i} = num2str(tmpTicker(i,1), '%06d');
+		if tmpTicker(i,1) < 600000
 			Market(i) = 0;
 		else
 			Market(i) = 1;
 		end
-		if child_vol(i,ipart) > 0
+		if tmpVol(i,1) > 0
 			BS{i} = 'B';
-		elseif child_vol(i,ipart) < 0
+		elseif tmpVol(i,1) < 0
 			BS{i} = 'S';
 		end
-		Vol(i) = abs(child_vol(i,ipart));
-	end
-	
-	if exist(file_today, 'file')
+		Vol(i) = abs(tmpVol(i,1));
+    end
+    
+    if exist(file_today, 'file')
 		delete(file_today);
-	end
-	if copyfile(file_modle, file_today,'f') == 1
+    end
+    if copyfile(file_modle, file_today,'f') == 1
         if xlswrite(file_today,Title,'SHEET1','A1:G1') == 1
         else
-            fprintf(2,'Title FAILED.\n');
+            fprintf('Title FAILED.\n');
         end
-		if xlswrite(file_today, Market, 'SHEET1', 'A2') == 1
+        if xlswrite(file_today, Market, 'SHEET1', 'A2') == 1
 		else
 			fprintf('Market Failed.\n');
-		end
-		if xlswrite(file_today, Ticker, 'SHEET1', 'B2') == 1
+        end
+        if xlswrite(file_today, Ticker, 'SHEET1', 'B2') == 1
 		else
 			fprintf('Ticker Failed.\n');
-		end
-		if xlswrite(file_today, BS, 'SHEET1', 'C2') == 1
+        end
+        if xlswrite(file_today, BS, 'SHEET1', 'C2') == 1
 		else
 			fprintf('BS Failed.\n');
-		end
-		if xlswrite(file_today, Vol, 'SHEET1', 'D2') == 1
+        end
+        if xlswrite(file_today, Vol, 'SHEET1', 'D2') == 1
 		else
 			fprintf('Vol Failed.\n');
-		end
-		if xlswrite(file_today, Price, 'SHEET1', 'E2') == 1
+        end
+        if xlswrite(file_today, Price, 'SHEET1', 'E2') == 1
 		else
 			fprintf('Price Failed.\n');
-		end
-		if xlswrite(file_today, PriceType, 'SHEET1', 'F2') == 1
+        end
+        if xlswrite(file_today, PriceType, 'SHEET1', 'F2') == 1
 		else
 			fprintf('PriceType Failed.\n');
-		end
-		if xlswrite(file_today, DeltaPrice, 'SHEET1', 'G2') == 1
+        end
+        if xlswrite(file_today, DeltaPrice, 'SHEET1', 'G2') == 1
 		else
 			fprintf('DeltaPrice Failed.\n');
-		end
-		fprintf(2, 'Kill excel thread...\n');
-		system('taskkill /f /im excel.exe');
+        end
 		
 		[idate, itime] = GetDateTimeNum();
 		fprintf(fid_log, '--->>> %s_%s,\tDone write trade file. file = %s.\n', num2str(idate), num2str(itime), file_today);
 		dst_file_today = [path_account 'HistoricalTrade\' file_name '_' num2str(idate) '_' num2str(itime) '.xlsx'];
-		CopyFile2HistoryDir(file_today, dst_file_today); 
-	else
+		CopyFile2HistoryDir(file_today, dst_file_today);
+    else
 		[idate, itime] = GetDateTimeNum();
+        fprintf(2, '--->>> %s_%s,\tError when copy modle file, when generate trade file. account = %s, file = %s.\n', num2str(idate), num2str(itime), AccountInfo{ai}.NAME, file_modle);
 		fprintf(fid_log, '--->>> %s_%s,\tError when copy modle file, when generate trade file. account = %s, file = %s.\n', num2str(idate), num2str(itime), AccountInfo{ai}.NAME, file_modle);
-	end
+    end
 end
     
 [idate, itime] = GetDateTimeNum();
