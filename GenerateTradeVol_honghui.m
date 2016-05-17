@@ -147,7 +147,7 @@ for ipart = 1:N_PART
 		[idate, itime] = GetDateTimeNum();
 		fprintf(fid_log, '--->>> %s_%s,\tDone write trade file. file = %s.\n', num2str(idate), num2str(itime), sfile_today);
 		dst_sfile_today = [path_account 'HistoricalTrade\' sfile_name '_' num2str(idate) '_' num2str(itime) '.xlsx'];
-		CopyFile2HistoryDir(file_today, dst_sfile_today);
+		CopyFile2HistoryDir(sfile_today, dst_sfile_today);
     else
 		[idate, itime] = GetDateTimeNum();
         fprintf(2, '--->>> %s_%s,\tError when copy modle file, when generate trade file. account = %s, file = %s.\n', num2str(idate), num2str(itime), AccountInfo{ai}.NAME, file_modle);
@@ -167,7 +167,7 @@ for ipart = 1:N_PART
 		[idate, itime] = GetDateTimeNum();
 		fprintf(fid_log, '--->>> %s_%s,\tDone write trade file. file = %s.\n', num2str(idate), num2str(itime), bfile_today);
 		dst_bfile_today = [path_account 'HistoricalTrade\' bfile_name '_' num2str(idate) '_' num2str(itime) '.xlsx'];
-		CopyFile2HistoryDir(file_today, dst_bfile_today);
+		CopyFile2HistoryDir(bfile_today, dst_bfile_today);
     else
 		[idate, itime] = GetDateTimeNum();
         fprintf(2, '--->>> %s_%s,\tError when copy modle file, when generate trade file. account = %s, file = %s.\n', num2str(idate), num2str(itime), AccountInfo{ai}.NAME, file_modle);
