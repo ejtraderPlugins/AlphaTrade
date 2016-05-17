@@ -103,7 +103,7 @@ end
 [idate, itime] = GetDateTimeNum();
 dst_sourceFile = [path_source 'HistoricalLog\stock_holding_' num2str(idate) '_' num2str(itime) '.txt'];
 dst_destFile   = [path_dest '\HistoricalCurrentHolding\current_holding_' num2str(idate) '_' num2str(itime) '.txt'];
-dst_file_split = [path_dest 'HitoricalSplit\split_' num2str(idate) '_' num2str(itime) '.txt'];
+dst_file_split = [path_dest 'HistoricalSplit\split_' num2str(idate) '_' num2str(itime) '.txt'];
 CopyFile2HistoryDir(sourceFile, dst_sourceFile);
 CopyFile2HistoryDir(destFile, dst_destFile);
 CopyFile2HistoryDir(file_split, dst_file_split);
