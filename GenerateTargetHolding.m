@@ -276,7 +276,7 @@ end
 file_size = [dir_account 'size.txt'];
 op_file = fopen(file_size, 'w');
 fprintf(op_file, '%10d',idate);
-fprintf(op_file, '%20d%10d',selectMoney(1), r_share);
+fprintf(op_file, '%20d\t%10d',selectMoney(1), r_share);
 fprintf(op_file, '\n');
 fclose(op_file);
 fprintf(fid_log, '--->>> %s_%s,\tDONE writing size file.\n', num2str(idate), num2str(itime));
