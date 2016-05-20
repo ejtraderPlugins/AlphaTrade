@@ -159,6 +159,18 @@
 			<path flag='lastpricepath'>E:\Chn_Stocks_Trading_System\DailyReport\ReportData\LastPrice\</path>
 		</pathes>
 	</account>
+	
+	<account id='14' name='BZHANG_DONGZHENG' status='on' date='20160504' logclient='honghui' tradeclient='honghui' unit='1' npart='1'>
+		<pathes>
+			<path flag='basepath'>E:\Chn_Stocks_Trading_System\AlphaTrade\</path>
+			<path flag='strategypath'>\\192.168.1.109\Chn_Stocks_Trading_System\Trade_Goals\stockStrategy\</path>
+			<path flag='matdata8path'>\\192.168.1.109\Chn_Stocks_Trading_System\ProductionData\matdata_8\</path>
+			<path flag='indexlogpath'>E:\Chn_Stocks_Trading_System\IndexTradeLogs\</path>
+			<path flag='cleandatapath'>E:\CleanData\</path>
+			<path flag='reportresultdatapath'>E:\ReportResultData\</path>
+			<path flag='lastpricepath'>E:\Chn_Stocks_Trading_System\DailyReport\ReportData\LastPrice\</path>
+		</pathes>
+	</account>
 </accounts>
 
 </account_config>
