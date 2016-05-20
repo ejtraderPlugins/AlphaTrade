@@ -39,7 +39,7 @@
 		</pathes>
 	</account>
 	
-	<account id='4' name='ZQIN_HUABAO' status='off' date='20150514' logclient='winner' tradeclient='winner' unit='1' front='tcp://10.200.52.14:24513' broker='2011' capital='050000006200' pswd='1170015' npart='1'>
+	<account id='4' name='ZQIN_HUABAO' status='off' date='20150514' logclient='winner' tradeclient='winner' unit='1' front='tcp://10.200.52.14:xxxxx' broker='xxxx' capital='xxx' pswd='xxxxxx' npart='1'>
 		<pathes>
 			<path flag='basepath'>E:\Chn_Stocks_Trading_System\AlphaTrade\</path>
 			<path flag='strategypath'>\\192.168.1.109\Chn_Stocks_Trading_System\Trade_Goals\stockStrategy\</path>
