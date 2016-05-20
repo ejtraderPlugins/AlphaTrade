@@ -106,6 +106,7 @@ child_vol = (dev_vol + rem_vol) .* bs * 100; % 乘以100后变成股数, 并且带有符号
 % begin to write in parts
 [idate, itime] = GetDateTimeNum();
 fprintf('--->>> %s_%s,\tTotal Part = %d. account = %s\n', num2str(idate), num2str(itime), N_PART, AccountInfo{ai}.NAME);
+Title = {'Ticker', 'Name', 'Market', 'BS', 'PriceType', 'Price', 'Vol', 'Money'};
 for ipart = 1:N_PART
 	[idate, itime] = GetDateTimeNum();
 	fprintf('--->>> %s_%s,\tGenerate Part %d.\n', num2str(idate), num2str(itime), ipart);
@@ -151,6 +152,10 @@ for ipart = 1:N_PART
 		delete(file_today);
     end
     if copyfile(file_modle, file_today,'f') == 1
+        if xlswrite(file_today, Title, 'SHEET1', 'A1:H1') == 1
+        else
+            fprintf('Title Failed.\n');
+        end
         if xlswrite(file_today, Ticker, 'SHEET1', 'A2') == 1
         else
             fprintf('Tickrer Failed.\n');

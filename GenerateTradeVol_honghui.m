@@ -130,7 +130,7 @@ for ipart = 1:N_PART
     if exist(sfile_today, 'file')
 		delete(sfile_today);
     end
-	if exist(bfile_today, 'file')
+    if exist(bfile_today, 'file')
 		delete(bfile_today);
     end
 	
