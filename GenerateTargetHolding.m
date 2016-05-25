@@ -22,15 +22,18 @@ dir_account = [AccountInfo{ai}.BASEPATH AccountInfo{ai}.NAME '\'];
 dir_strategy = AccountInfo{ai}.STRATEGYPATH;
 dir_matdata = AccountInfo{ai}.MATDATA8PATH;
 
+file_name_alpha   = AccountInfo{ai}.ALPHAFILE;
+
 file_share        = [dir_account 'share.txt'];
 file_current      = [dir_account 'current_holding.txt'];
 file_forbidden    = [dir_account 'forbidden.txt'];
 file_co_forbidden = [dir_account 'co_forbidden_list.txt'];
 file_dateList     = [dir_matdata 'dateList.mat'];
 
+
 load(file_dateList);%dateList
 alpha_date = num2str(dateList(end));
-file_alpha   = [dir_strategy 'alpha.' alpha_date]; 
+file_alpha = [dir_strategy file_name_alpha alpha_date];
 
 %% copy to history direction before use
 dst_file_share            = [dir_account 'HistoricalShare\share_' num2str(idate) '_' num2str(itime) '.txt'];
