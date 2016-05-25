@@ -123,7 +123,7 @@ for ipart = 1:N_PART
 	tmpVol(all(tmpVol == 0, 2), :) = [];	
 	
 	sTicker = tmpTicker(tmpVol < 0, 1);
-	sVol = tmpVol(tmpVol < 0, 1);
+	sVol = abs(tmpVol(tmpVol < 0, 1));
 	bTicker = tmpTicker(tmpVol > 0, 1);
 	bVol = tmpVol(tmpVol > 0, 1);
     
