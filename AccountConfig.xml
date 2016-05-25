@@ -3,7 +3,7 @@
 <account_config>
 
 <accounts>
-	<account id='1' name='SHUNSHI_DAHUA' status='off' date='20150403' logclient='xuntou' tradeclient='xuntou' unit='1' npart='1' alphafile='alpha.'>
+	<account id='1' name='SHUNSHI_DAHUA' status='off' date='20150403' logclient='xuntou' tradeclient='xuntou' unit='1' npart='1'>
 		<pathes>
 			<path flag='basepath'>E:\Chn_Stocks_Trading_System\AlphaTrade\</path>
 			<path flag='strategypath'>\\192.168.1.109\Chn_Stocks_Trading_System\Trade_Goals\stockStrategy\</path>
@@ -13,9 +13,13 @@
 			<path flag='reportresultdatapath'>E:\ReportResultData\</path>
 			<path flag='lastpricepath'>E:\Chn_Stocks_Trading_System\DailyReport\ReportData\LastPrice\</path>
 		</pathes>
+		
+		<filenames>
+			<filename flag='alphafile'>alpha.</filename>
+		</filenames>
 	</account>
 
-	<account id='2' name='SHUNSHI_DAHUA' status='off' date='20150403' logclient='xuntou' tradeclient='xuntou' unit='1' npart='1' alphafile='alpha.'>
+	<account id='2' name='SHUNSHI_DAHUA' status='off' date='20150403' logclient='xuntou' tradeclient='xuntou' unit='1' npart='1'>
 		<pathes>
 			<path flag='basepath'>E:\Chn_Stocks_Trading_System\AlphaTrade\</path>
 			<path flag='strategypath'>\\192.168.1.109\Chn_Stocks_Trading_System\Trade_Goals\stockStrategy\</path>
@@ -25,9 +29,13 @@
 			<path flag='reportresultdatapath'>E:\ReportResultData\</path>
 			<path flag='lastpricepath'>E:\Chn_Stocks_Trading_System\DailyReport\ReportData\LastPrice\</path>
 		</pathes>
+		
+		<filenames>
+			<filename flag='alphafile'>alpha.</filename>
+		</filenames>		
 	</account>
 	
-	<account id='3' name='DERUN_GUOLIAN' status='off' date='20150409' logclient='tdx' tradeclient='a8' unit='1' npart='1' alphafile='alpha.'>
+	<account id='3' name='DERUN_GUOLIAN' status='off' date='20150409' logclient='tdx' tradeclient='a8' unit='1' npart='1'>
 		<pathes>
 			<path flag='basepath'>E:\Chn_Stocks_Trading_System\AlphaTrade\</path>
 			<path flag='strategypath'>\\192.168.1.109\Chn_Stocks_Trading_System\Trade_Goals\stockStrategy\</path>
@@ -37,9 +45,13 @@
 			<path flag='reportresultdatapath'>E:\ReportResultData\</path>
 			<path flag='lastpricepath'>E:\Chn_Stocks_Trading_System\DailyReport\ReportData\LastPrice\</path>
 		</pathes>
+		
+		<filenames>
+			<filename flag='alphafile'>alpha.</filename>
+		</filenames>
 	</account>
 	
-	<account id='4' name='ZQIN_HUABAO' status='off' date='20150514' logclient='winner' tradeclient='winner' unit='1' front='tcp://10.200.52.14:24513' broker='xxx' capital='xxx' pswd='xxx' npart='1' alphafile='alpha.'>
+	<account id='4' name='ZQIN_HUABAO' status='off' date='20150514' logclient='winner' tradeclient='winner' unit='1' front='tcp://10.200.52.14:24513' broker='xxx' capital='xxx' pswd='xxx' npart='1'>
 		<pathes>
 			<path flag='basepath'>E:\Chn_Stocks_Trading_System\AlphaTrade\</path>
 			<path flag='strategypath'>\\192.168.1.109\Chn_Stocks_Trading_System\Trade_Goals\stockStrategy\</path>
@@ -50,9 +62,13 @@
 			<path flag='reportresultdatapath'>E:\ReportResultData\</path>
 			<path flag='lastpricepath'>E:\Chn_Stocks_Trading_System\DailyReport\ReportData\LastPrice\</path>
 		</pathes>
+		
+		<filenames>
+			<filename flag='alphafile'>alpha.</filename>
+		</filenames>
 	</account>
 	
-	<account id='5' name='HANDE_GUANTONG' status='off' date='20150602' logclient='tdx' tradeclient='a8' unit='1' npart='1' alphafile='alpha_Top300NoA50.'>
+	<account id='5' name='HANDE_GUANTONG' status='off' date='20150602' logclient='tdx' tradeclient='a8' unit='1' npart='1'>
 		<pathes>
 			<path flag='basepath'>E:\Chn_Stocks_Trading_System\AlphaTrade\</path>
 			<path flag='strategypath'>\\192.168.1.109\Chn_Stocks_Trading_System\Trade_Goals\stockStrategy\</path>
@@ -62,9 +78,13 @@
 			<path flag='reportresultdatapath'>E:\ReportResultData\</path>
 			<path flag='lastpricepath'>E:\Chn_Stocks_Trading_System\DailyReport\ReportData\LastPrice\</path>
 		</pathes>
+		
+		<filenames>
+			<filename flag='alphafile'>alpha_Top300NoA50.</filename>
+		</filenames>
 	</account>
 	
-	<account id='6' name='HANTAK_GUOXIN' status='off' date='20151013' logclient='xuntou' tradeclient='xuntou' unit='1' npart='1' alphafile='alpha.'>
+	<account id='6' name='HANTAK_GUOXIN' status='off' date='20151013' logclient='xuntou' tradeclient='xuntou' unit='1' npart='1'>
 		<pathes>
 			<path flag='basepath'>E:\Chn_Stocks_Trading_System\AlphaTrade\</path>
 			<path flag='strategypath'>\\192.168.1.109\Chn_Stocks_Trading_System\Trade_Goals\stockStrategy\</path>
@@ -74,9 +94,13 @@
 			<path flag='reportresultdatapath'>E:\ReportResultData\</path>
 			<path flag='lastpricepath'>E:\Chn_Stocks_Trading_System\DailyReport\ReportData\LastPrice\</path>
 		</pathes>
+		
+		<filenames>
+			<filename flag='alphafile'>alpha.</filename>
+		</filenames>
 	</account>
 	
-	<account id='7' name='CHUANJIABAO_GUOTAI' status='off' date='20161013' logclient='tdx' tradeclient='a8' unit='1' npart='1' alphafile='alpha.'>
+	<account id='7' name='CHUANJIABAO_GUOTAI' status='off' date='20161013' logclient='tdx' tradeclient='a8' unit='1' npart='1'>
 		<pathes>
 			<path flag='basepath'>E:\Chn_Stocks_Trading_System\AlphaTrade\</path>
 			<path flag='strategypath'>\\192.168.1.109\Chn_Stocks_Trading_System\Trade_Goals\stockStrategy\</path>
@@ -86,9 +110,13 @@
 			<path flag='reportresultdatapath'>E:\ReportResultData\</path>
 			<path flag='lastpricepath'>E:\Chn_Stocks_Trading_System\DailyReport\ReportData\LastPrice\</path>
 		</pathes>
+		
+		<filenames>
+			<filename flag='alphafile'>alpha.</filename>
+		</filenames>
 	</account>
 
-	<account id='8' name='DEBEN_HUATAI' status='off' date='20160105' logclient='xuntou' tradeclient='xuntou' unit='100' npart='1' alphafile='alpha.'>
+	<account id='8' name='DEBEN_HUATAI' status='off' date='20160105' logclient='xuntou' tradeclient='xuntou' unit='100' npart='1'>
 		<pathes>
 			<path flag='basepath'>E:\Chn_Stocks_Trading_System\AlphaTrade\</path>
 			<path flag='strategypath'>\\192.168.1.109\Chn_Stocks_Trading_System\Trade_Goals\stockStrategy\</path>
@@ -98,9 +126,13 @@
 			<path flag='reportresultdatapath'>E:\ReportResultData\</path>
 			<path flag='lastpricepath'>E:\Chn_Stocks_Trading_System\DailyReport\ReportData\LastPrice\</path>
 		</pathes>
+		
+		<filenames>
+			<filename flag='alphafile'>alpha.</filename>
+		</filenames>
 	</account>
 
-	<account id='9' name='JINQU_DONGHANG' status='off' date='20160114' logclient='a8' tradeclient='a8' unit='1' npart='1' alphafile='alpha.'>
+	<account id='9' name='JINQU_DONGHANG' status='off' date='20160114' logclient='a8' tradeclient='a8' unit='1' npart='1'>
 		<pathes>
 			<path flag='basepath'>E:\Chn_Stocks_Trading_System\AlphaTrade\</path>
 			<path flag='strategypath'>\\192.168.1.109\Chn_Stocks_Trading_System\Trade_Goals\stockStrategy\</path>
@@ -110,9 +142,13 @@
 			<path flag='reportresultdatapath'>E:\ReportResultData\</path>
 			<path flag='lastpricepath'>E:\Chn_Stocks_Trading_System\DailyReport\ReportData\LastPrice\</path>
 		</pathes>
+		
+		<filenames>
+			<filename flag='alphafile'>alpha.</filename>
+		</filenames>
 	</account>
 	
-	<account id='10' name='ZHONGHANG_DONGHANG' status='off' date='20160114' logclient='a8' tradeclient='a8' unit='1' npart='1' alphafile='alpha.'>
+	<account id='10' name='ZHONGHANG_DONGHANG' status='off' date='20160114' logclient='a8' tradeclient='a8' unit='1' npart='1'>
 		<pathes>
 			<path flag='basepath'>E:\Chn_Stocks_Trading_System\AlphaTrade\</path>
 			<path flag='strategypath'>\\192.168.1.109\Chn_Stocks_Trading_System\Trade_Goals\stockStrategy\</path>
@@ -122,9 +158,13 @@
 			<path flag='reportresultdatapath'>E:\ReportResultData\</path>
 			<path flag='lastpricepath'>E:\Chn_Stocks_Trading_System\DailyReport\ReportData\LastPrice\</path>
 		</pathes>
+		
+		<filenames>
+			<filename flag='alphafile'>alpha.</filename>
+		</filenames>
 	</account>
 	
-	<account id='11' name='ZHONGJIN_JINRUI' status='off' date='20160426' logclient='ims' tradeclient='ims' unit='1' npart='1' alphafile='alpha.'>
+	<account id='11' name='ZHONGJIN_JINRUI' status='off' date='20160426' logclient='ims' tradeclient='ims' unit='1' npart='1'>
 		<pathes>
 			<path flag='basepath'>E:\Chn_Stocks_Trading_System\AlphaTrade\</path>
 			<path flag='strategypath'>\\192.168.1.109\Chn_Stocks_Trading_System\Trade_Goals\stockStrategy\</path>
@@ -134,9 +174,13 @@
 			<path flag='reportresultdatapath'>E:\ReportResultData\</path>
 			<path flag='lastpricepath'>E:\Chn_Stocks_Trading_System\DailyReport\ReportData\LastPrice\</path>
 		</pathes>
+		
+		<filenames>
+			<filename flag='alphafile'>alpha.</filename>
+		</filenames>
 	</account>
 	
-	<account id='12' name='HAIXIN_HAITONG' status='off' date='20160426' logclient='hundsun' tradeclient='hundsun' unit='1' npart='1' alphafile='alpha.'>
+	<account id='12' name='HAIXIN_HAITONG' status='off' date='20160426' logclient='hundsun' tradeclient='hundsun' unit='1' npart='1'>
 		<pathes>
 			<path flag='basepath'>E:\Chn_Stocks_Trading_System\AlphaTrade\</path>
 			<path flag='strategypath'>\\192.168.1.109\Chn_Stocks_Trading_System\Trade_Goals\stockStrategy\</path>
@@ -146,9 +190,13 @@
 			<path flag='reportresultdatapath'>E:\ReportResultData\</path>
 			<path flag='lastpricepath'>E:\Chn_Stocks_Trading_System\DailyReport\ReportData\LastPrice\</path>
 		</pathes>
+		
+		<filenames>
+			<filename flag='alphafile'>alpha.</filename>
+		</filenames>
 	</account>
 	
-	<account id='13' name='DONGFANG_DONGZHENG' status='on' date='20160504' logclient='hundsun' tradeclient='hundsun' unit='1' npart='1' alphafile='alpha.'>
+	<account id='13' name='DONGFANG_DONGZHENG' status='on' date='20160504' logclient='hundsun' tradeclient='hundsun' unit='1' npart='1'>
 		<pathes>
 			<path flag='basepath'>E:\Chn_Stocks_Trading_System\AlphaTrade\</path>
 			<path flag='strategypath'>\\192.168.1.109\Chn_Stocks_Trading_System\Trade_Goals\stockStrategy\</path>
@@ -158,6 +206,10 @@
 			<path flag='reportresultdatapath'>E:\ReportResultData\</path>
 			<path flag='lastpricepath'>E:\Chn_Stocks_Trading_System\DailyReport\ReportData\LastPrice\</path>
 		</pathes>
+		
+		<filenames>
+			<filename flag='alphafile'>alpha.</filename>
+		</filenames>
 	</account>
 	
 	<account id='14' name='BZHANG_DONGZHENG' status='on' date='20160504' logclient='honghui' tradeclient='honghui' unit='1' npart='1'>

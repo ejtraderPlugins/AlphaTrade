@@ -38,6 +38,17 @@ for i = 1:numOfAccount
         val = char(tmp);
         eval(['AccountInfo{i}.' tag_name '= val;']);
     end
+	
+	FileNames = m_account.getElementsByTagName('filename');
+	num_filename = FileNames.getLength();
+	for j = 1:num_filename
+		m_filename = FileNames.item(j-1);
+		tmp = m_filename.getAttribute('flag');
+		tag_name = upper(char(tmp));
+		tmp = m_filename.getTextContent;
+		val = char(tmp);
+		eval(['AccountInfo{i}.' tag_name ' = val;']);
+	end
 end
 
 %% end log
