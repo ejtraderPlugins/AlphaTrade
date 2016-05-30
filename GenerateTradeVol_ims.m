@@ -134,7 +134,7 @@ for ipart = 1:N_PART
 			end
 			Vol = num2str(abs(child_vol(i,ipart)));
 			
-			lines = [Market '|' Ticker '|' BS '|' '|' PriceType '|' Price '|' Vol '\n'];
+			lines = [Market '|' Ticker '|' BS '|' '|' PriceType '|' '|' Price '|' Vol '\n'];
 			fprintf(fid, lines);
 		end
 		fclose(fid);
