@@ -37,7 +37,7 @@ if fid_s > 0
     holding(:,1) = tmp(2:end,1);
     tmp = str2double(rawData{1,6});%holding
     holding(:,2) = tmp(2:end,1) * unit;
-    tmp = str2double(rawData{1,15});%available holding
+    tmp = str2double(rawData{1,15}) * unit;%available holding
     holding(:,3) = tmp(2:end,1);
 
     holding(any(isnan(holding),2),:) = [];
