@@ -15,7 +15,10 @@
 		</pathes>
 		
 		<filenames>
-			<filename flag='alphafile'>alpha.</filename>
+            <alphafiles>
+                <alphafilename flag='alphafile'>alpha.</alphafilename>
+                <alphafilename flag='alphafile'>alpha_ZZ500.</alphafilename>
+            </alphafiles>
 		</filenames>
 	</account>
 
@@ -177,6 +180,7 @@
 		
 		<filenames>
 			<filename flag='alphafile'>alpha.</filename>
+            <filename flag='alphafile'>alpha_ZZ500.</filename>
 		</filenames>
 	</account>
 	

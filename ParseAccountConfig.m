@@ -39,15 +39,16 @@ for i = 1:numOfAccount
         eval(['AccountInfo{i}.' tag_name '= val;']);
     end
 	
-	FileNames = m_account.getElementsByTagName('filename');
+    tag_name = 'alphafilename';
+	FileNames = m_account.getElementsByTagName(tag_name);
 	num_filename = FileNames.getLength();
+    eval(['AccountInfo{i}.' tag_name ' = cell(1, num_filename);']);
 	for j = 1:num_filename
 		m_filename = FileNames.item(j-1);
-		tmp = m_filename.getAttribute('flag');
-		tag_name = upper(char(tmp));
 		tmp = m_filename.getTextContent;
 		val = char(tmp);
-		eval(['AccountInfo{i}.' tag_name ' = val;']);
+        tag_name = upper(tag_name);
+		eval(['AccountInfo{i}.' tag_name '{j} = val;']);
 	end
 end
 
