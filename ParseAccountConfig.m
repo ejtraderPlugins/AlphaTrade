@@ -42,12 +42,13 @@ for i = 1:numOfAccount
     tag_name = 'alphafilename';
 	FileNames = m_account.getElementsByTagName(tag_name);
 	num_filename = FileNames.getLength();
+    tmp = FileNames.item(0).getAttribute('flag');
+    tag_name = upper(char(tmp));
     eval(['AccountInfo{i}.' tag_name ' = cell(1, num_filename);']);
 	for j = 1:num_filename
 		m_filename = FileNames.item(j-1);
 		tmp = m_filename.getTextContent;
 		val = char(tmp);
-        tag_name = upper(tag_name);
 		eval(['AccountInfo{i}.' tag_name '{j} = val;']);
 	end
 end

@@ -52,6 +52,9 @@ r_share = sum(sum(share_today));
 %% load stock price
 [idate,itime] = GetDateTimeNum();
 mins     = floor(itime / 100);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+idate = 20160531;
+mins = 1440;
 if mins < 931 || mins > 1500
     fprintf(2, '--->>> %s_%s,\tError when loading price mat file. error = not trading time.\n', num2str(idate), num2str(itime));
     fprintf(fid_log, '--->>> %s_%s,\tError when loading price mat file. error = not trading time.\n', num2str(idate), num2str(itime));
@@ -190,7 +193,7 @@ usingMoney     = zeros(1, N_STOCK);
 CAP                 =  limitLow;%取下限先逼近， 得不到结果再取上限来一遍
 for fi = 1:N_FS
     stockShares = zeros(N_STOCK, 1);
-    alpha_benchMoney  = sum((HS300Price * share_today(:, 1) - A50Price * share_today(:, 2)) * 300 + ZZ500Price * share_today(:, 3) * 200);% 每个alpha对应的benchMoney
+    alpha_benchMoney  = (HS300Price * share_today(:, 1) - A50Price * share_today(:, 2)) * 300 + ZZ500Price * share_today(:, 3) * 200;% 每个alpha对应的benchMoney
     benchMoney  = sum(alpha_benchMoney);
     alpha_money = alpha_benchMoney .* fs(fi);
     alpha_money = fix(alpha_money ./ 1e4) .* 1e4;
