@@ -7,6 +7,9 @@ fid_log = AlphaTradeLog();
 %% parse the xml config file, get account information
 AccountInfo = ParseAccountConfig();
 
+%% check some data file
+CheckDataFile(AccountInfo);
+
 %% trade process including: 1.get current holding, 2.generate target, 3.generate trade vol
 TradeProcess(AccountInfo);
 
