@@ -186,7 +186,6 @@ instrlist(1:N_STOCK) = stockPrice(1:N_STOCK, 3);
 limitUp  = 1.05;
 limitLow = 1.01;
 targetHoldings = zeros(1, N_STOCK);
-usingMoney     = zeros(1, N_STOCK);
 CAP                 =  limitLow;%取下限先逼近， 得不到结果再取上限来一遍
 for fi = 1:N_FS
     stockShares = zeros(N_STOCK, 1);
