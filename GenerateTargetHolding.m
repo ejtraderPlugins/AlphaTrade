@@ -10,10 +10,9 @@ end
 
 selectMoney = 0;
 usingMoney = 0;
-share_today  = zeros(1,3);
 selectFS = 0;
 CAP = 0;
-r_share = share_today(1);
+r_share = 0;
 
 [idate, itime] = GetDateTimeNum();
 fprintf(fid_log, '--->>> %s_%s,\tBegin generate target holding. account = %s.\n', num2str(idate), num2str(itime), AccountInfo{ai}.NAME);
@@ -21,36 +20,34 @@ fprintf(fid_log, '--->>> %s_%s,\tBegin generate target holding. account = %s.\n'
 dir_account = [AccountInfo{ai}.BASEPATH AccountInfo{ai}.NAME '\'];
 dir_strategy = AccountInfo{ai}.STRATEGYPATH;
 dir_matdata = AccountInfo{ai}.MATDATA8PATH;
-
 file_name_alpha   = AccountInfo{ai}.ALPHAFILE;
 
-file_share        = [dir_account 'share.txt'];
 file_current      = [dir_account 'current_holding.txt'];
 file_forbidden    = [dir_account 'forbidden.txt'];
 file_co_forbidden = [dir_account 'co_forbidden_list.txt'];
 file_dateList     = [dir_matdata 'dateList.mat'];
 
-
-load(file_dateList);%dateList
-alpha_date = num2str(dateList(end));
-file_alpha = [dir_strategy file_name_alpha alpha_date];
-
 %% copy to history direction before use
-dst_file_share            = [dir_account 'HistoricalShare\share_' num2str(idate) '_' num2str(itime) '.txt'];
 dst_file_forbidden      = [dir_account 'HistoricalForbidden\forbidden_' num2str(idate) '_' num2str(itime) '.txt'];
 dst_file_co_forbidden = [dir_account 'HistoricalCoForbidden\co_forbidden_list_' num2str(idate) '_' num2str(itime) '.txt'];
-CopyFile2HistoryDir(file_share, dst_file_share);
 CopyFile2HistoryDir(file_forbidden, dst_file_forbidden);
 CopyFile2HistoryDir(file_co_forbidden, dst_file_co_forbidden);
 
-%% load share, share(:,1)-> date , share(:,2) -> IF, share(:,3) -> IH, share(:,4) -> IC
-if exist(file_share,'file')
-    share_today = load(file_share);
-else
-    fprintf(fid_log, '--->>> %s_%s,\Error when load share. file = %s.\n', num2str(idate), num2str(itime), file_share);
-    return;
+%% load share, share(:,1) -> IF, share(:,2) -> IH, share(:,3) -> IC
+num_file_alpha = length(file_name_alpha);
+share_today = zeros(num_file_alpha, 3);   
+for i = 1:num_file_alpha
+    file_share = [dir_account 'share_' file_name_alpha{i} 'txt'];
+    dst_file_share            = [dir_account 'HistoricalShare\share_' num2str(idate) '_' num2str(itime) file_name_alpha{i} 'txt'];
+    CopyFile2HistoryDir(file_share, dst_file_share);
+    if exist(file_share,'file')
+        share_today(i,:) = load(file_share);%每一行的share_today对应到alpha文件
+    else
+        fprintf(fid_log, '--->>> %s_%s,\Error when load share. file = %s.\n', num2str(idate), num2str(itime), file_share);
+        return;
+    end
 end
-r_share = share_today(1);
+r_share = sum(sum(share_today));
 
 %% load stock price
 [idate,itime] = GetDateTimeNum();
@@ -113,20 +110,27 @@ else
 end
 
 %% load alpha file
+load(file_dateList);%dateList
+alpha_date = num2str(dateList(end));
 N_STOCK = size(stockPrice,1);
-alphas = zeros(1, N_STOCK);
-if exist(file_alpha, 'file')
-    tmpAlphas  = importdata(file_alpha);
-    N_TMPALPHA = size(tmpAlphas.textdata, 1);
-else
-    fprintf(fid_log, '--->>> %s_%s,\tError when loading alpha file. file = %s.\n', num2str(idate), num2str(itime), file_alpha);
-    return;
-end
-for ti = 1:N_TMPALPHA
-    inst = tmpAlphas.textdata{ti, 2};
-    inst = str2double(inst(3:8));
-    post = find(stockPrice(:, 3) == inst, 1, 'first');
-    alphas(post) = tmpAlphas.data(ti, 1);
+alphas = zeros(num_file_alpha, N_STOCK);% alphas的每一行对应每一个alpha文件
+for i = 1:num_file_alpha
+    file_alpha = [dir_strategy file_name_alpha{i} alpha_date];
+    if exist(file_alpha, 'file')
+        tmpAlphas  = importdata(file_alpha);
+        N_TMPALPHA = size(tmpAlphas.textdata, 1);
+    else
+        fprintf(2, '--->>> %s_%s,\tError when loading alpha file. file = %s.\n', num2str(idate), num2str(itime), file_alpha);
+        fprintf(fid_log, '--->>> %s_%s,\tError when loading alpha file. file = %s.\n', num2str(idate), num2str(itime), file_alpha);
+        return;
+    end
+
+    for ti = 1:N_TMPALPHA
+        inst = tmpAlphas.textdata{ti, 2};
+        inst = str2double(inst(3:8));
+        post = find(stockPrice(:, 3) == inst, 1, 'first');
+        alphas(i,post) = tmpAlphas.data(ti, 1);
+    end
 end
 
 %% load current holding
@@ -182,13 +186,13 @@ instrlist(1:N_STOCK) = stockPrice(1:N_STOCK, 3);
 limitUp  = 1.05;
 limitLow = 1.01;
 targetHoldings = zeros(1, N_STOCK);
-usingMoney     = zeros(1, N_STOCK);
-CAP                 =  limitLow;
+CAP                 =  limitLow;%取下限先逼近， 得不到结果再取上限来一遍
 for fi = 1:N_FS
     stockShares = zeros(N_STOCK, 1);
-    benchMoney  = (HS300Price * share_today(1) - A50Price * share_today(2)) * 300 + ZZ500Price * share_today(3) * 200;
-    money       = benchMoney * fs(fi);
-    money       = fix(money / 1e4) * 1e4;
+    alpha_benchMoney  = (HS300Price * share_today(:, 1) - A50Price * share_today(:, 2)) * 300 + ZZ500Price * share_today(:, 3) * 200;% 每个alpha对应的benchMoney
+    benchMoney  = sum(alpha_benchMoney);
+    alpha_money = alpha_benchMoney .* fs(fi);
+    alpha_money = fix(alpha_money ./ 1e4) .* 1e4;
     usedMoney   = 0;
     for ii = 1:N_STOCK
         if (forbidden(1, ii) == 1)
@@ -198,28 +202,23 @@ for fi = 1:N_FS
         if (stockPrice(ii, 2) == 0)
             stockShares(ii) = currentHoldings(1, ii);
         elseif (stockPrice(ii, 2) == 1)
-            stockShares(ii) = money * alphas(ii) / stockPrice(ii, 1);
+            stockShares(ii) = sum(alpha_money .* alphas(:, ii) / stockPrice(ii, 1));% 求和 该只股票在所有alpha中的目标持仓
             minHoldings     = max(0, currentHoldings(1, ii) - availHoldings(1, ii));
             stockShares(ii) = max(stockShares(ii), minHoldings);
             stockShares(ii) = fix(stockShares(ii) / 100) * 100;
         elseif (stockPrice(ii, 2) == 2)
-            stockShares(ii) = money * alphas(ii) / stockPrice(ii, 1);
+            stockShares(ii) = sum(alpha_money .* alphas(:, ii) / stockPrice(ii, 1));% 求和 该只股票在所有alpha中的目标持仓
             stockShares(ii) = max(stockShares(ii), currentHoldings(1, ii));
             stockShares(ii) = fix(stockShares(ii) / 100) * 100;
         elseif (stockPrice(ii, 2) == 3)
-            % Stop Selling STOCKS HIT LOWER LIMIT (AS SEC CONTROL)
             stockShares(ii) = currentHoldings(1, ii);
         end
-
-        if (stockPrice(ii, 2) == 1)
-            usedMoney = usedMoney + stockShares(ii) * stockPrice(ii, 1);
-        else
-            usedMoney = usedMoney + currentHoldings(1, ii) * stockPrice(ii, 1);
-        end
+        
+        usedMoney = usedMoney + stockShares(ii) * stockPrice(ii, 1);
     end
 
     if ((usedMoney > benchMoney) && (usedMoney < benchMoney * CAP))
-        selectMoney = money;
+        selectMoney = sum(alpha_money);
         selectFS    = fs(fi);
         usingMoney  = usedMoney;
         for ii = 1:N_STOCK
@@ -232,9 +231,10 @@ if selectFS == 0
     CAP = limitUp;
     for fi = 1:N_FS
         stockShares = zeros(N_STOCK, 1);
-        benchMoney  = (HS300Price * share_today(1) - A50Price * share_today(2)) * 300 + ZZ500Price * share_today(3) * 200;
-        money       = benchMoney * fs(fi);
-        money       = fix(money / 1e4) * 1e4;
+        alpha_benchMoney  = sum((HS300Price * share_today(:, 1) - A50Price * share_today(:, 2)) * 300 + ZZ500Price * share_today(:, 3) * 200);% 每个alpha对应的benchMoney
+        benchMoney  = sum(alpha_benchMoney);
+        alpha_money = alpha_benchMoney .* fs(fi);
+        alpha_money = fix(alpha_money ./ 1e4) .* 1e4;
         usedMoney   = 0;
         for ii = 1:N_STOCK
             if (forbidden(1, ii) == 1)
@@ -244,27 +244,23 @@ if selectFS == 0
             if (stockPrice(ii, 2) == 0)
                 stockShares(ii) = currentHoldings(1, ii);
             elseif (stockPrice(ii, 2) == 1)
-                stockShares(ii) = money * alphas(ii) / stockPrice(ii, 1);
+                stockShares(ii) = sum(alpha_money .* alphas(:, ii) / stockPrice(ii, 1));% 求和 该只股票在所有alpha中的目标持仓
                 minHoldings     = max(0, currentHoldings(1, ii) - availHoldings(1, ii));
                 stockShares(ii) = max(stockShares(ii), minHoldings);
                 stockShares(ii) = fix(stockShares(ii) / 100) * 100;
             elseif (stockPrice(ii, 2) == 2)
-                stockShares(ii) = money * alphas(ii) / stockPrice(ii, 1);
+                stockShares(ii) = sum(alpha_money .* alphas(:, ii) / stockPrice(ii, 1));% 求和 该只股票在所有alpha中的目标持仓
                 stockShares(ii) = max(stockShares(ii), currentHoldings(1, ii));
                 stockShares(ii) = fix(stockShares(ii) / 100) * 100;
             elseif (stockPrice(ii, 2) == 3)
-                % Stop Selling STOCKS HIT LOWER LIMIT (AS SEC CONTROL)
                 stockShares(ii) = currentHoldings(1, ii);
             end
 
-            if (stockPrice(ii, 2) == 1)
-                usedMoney = usedMoney + stockShares(ii) * stockPrice(ii, 1);
-            else
-                usedMoney = usedMoney + currentHoldings(1, ii) * stockPrice(ii, 1);
-            end
+            usedMoney = usedMoney + stockShares(ii) * stockPrice(ii, 1);
         end
+
         if ((usedMoney > benchMoney) && (usedMoney < benchMoney * CAP))
-            selectMoney = money;
+            selectMoney = sum(alpha_money);
             selectFS    = fs(fi);
             usingMoney  = usedMoney;
             for ii = 1:N_STOCK
