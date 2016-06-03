@@ -52,9 +52,6 @@ r_share = sum(sum(share_today));
 %% load stock price
 [idate,itime] = GetDateTimeNum();
 mins     = floor(itime / 100);
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-idate = 20160531;
-mins = 1440;
 if mins < 931 || mins > 1500
     fprintf(2, '--->>> %s_%s,\tError when loading price mat file. error = not trading time.\n', num2str(idate), num2str(itime));
     fprintf(fid_log, '--->>> %s_%s,\tError when loading price mat file. error = not trading time.\n', num2str(idate), num2str(itime));
