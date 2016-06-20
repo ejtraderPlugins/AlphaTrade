@@ -116,62 +116,61 @@ for ipart = 1:N_PART
 	bfile_name = ['trade_buy_p' num2str(ipart)];% buy file
 	sfile_today = [path_account sfile_name '.xlsx'];
 	bfile_today = [path_account bfile_name '.xlsx'];
-	
-    tmpVol = child_vol(:,ipart);
-    tmpTicker = diffHolding(:,1);
-    tmpTicker(all(tmpVol == 0, 2), :) = [];
-	tmpVol(all(tmpVol == 0, 2), :) = [];	
-	
-	sTicker = tmpTicker(tmpVol < 0, 1);
-	sVol = abs(tmpVol(tmpVol < 0, 1));
-	bTicker = tmpTicker(tmpVol > 0, 1);
-	bVol = tmpVol(tmpVol > 0, 1);
-    
     if exist(sfile_today, 'file')
 		delete(sfile_today);
     end
     if exist(bfile_today, 'file')
 		delete(bfile_today);
     end
-	
+
+    tmpVol = child_vol(:,ipart);
+    tmpTicker = diffHolding(:,1);
+    tmpTicker(all(tmpVol == 0, 2), :) = [];
+    tmpVol(all(tmpVol == 0, 2), :) = [];	
+
+    sTicker = tmpTicker(tmpVol < 0, 1);
+    sVol = abs(tmpVol(tmpVol < 0, 1));
+    bTicker = tmpTicker(tmpVol > 0, 1);
+    bVol = tmpVol(tmpVol > 0, 1);
+
     if copyfile(file_modle, sfile_today,'f') == 1
         if xlswrite(sfile_today,sTicker,'SHEET1','A1') == 1
         else
             fprintf('sTicker FAILED.\n');
         end
         if xlswrite(sfile_today, sVol, 'SHEET1', 'C1') == 1
-		else
-			fprintf('sVol Failed.\n');
+        else
+            fprintf('sVol Failed.\n');
         end
-		
-		[idate, itime] = GetDateTimeNum();
-		fprintf(fid_log, '--->>> %s_%s,\tDone write trade file. file = %s.\n', num2str(idate), num2str(itime), sfile_today);
-		dst_sfile_today = [path_account 'HistoricalTrade\' sfile_name '_' num2str(idate) '_' num2str(itime) '.xlsx'];
-		CopyFile2HistoryDir(sfile_today, dst_sfile_today);
+
+        [idate, itime] = GetDateTimeNum();
+        fprintf(fid_log, '--->>> %s_%s,\tDone write trade file. file = %s.\n', num2str(idate), num2str(itime), sfile_today);
+        dst_sfile_today = [path_account 'HistoricalTrade\' sfile_name '_' num2str(idate) '_' num2str(itime) '.xlsx'];
+        CopyFile2HistoryDir(sfile_today, dst_sfile_today);
     else
-		[idate, itime] = GetDateTimeNum();
+        [idate, itime] = GetDateTimeNum();
         fprintf(2, '--->>> %s_%s,\tError when copy modle file, when generate trade file. account = %s, file = %s.\n', num2str(idate), num2str(itime), AccountInfo{ai}.NAME, file_modle);
-		fprintf(fid_log, '--->>> %s_%s,\tError when copy modle file, when generate trade file. account = %s, file = %s.\n', num2str(idate), num2str(itime), AccountInfo{ai}.NAME, file_modle);
+        fprintf(fid_log, '--->>> %s_%s,\tError when copy modle file, when generate trade file. account = %s, file = %s.\n', num2str(idate), num2str(itime), AccountInfo{ai}.NAME, file_modle);
     end
-	
-	if copyfile(file_modle, bfile_today,'f') == 1
+
+    if copyfile(file_modle, bfile_today,'f') == 1
         if xlswrite(bfile_today,bTicker,'SHEET1','A1') == 1
         else
             fprintf('bTicker FAILED.\n');
         end
         if xlswrite(bfile_today, bVol, 'SHEET1', 'C1') == 1
-		else
-			fprintf('bVol Failed.\n');
+        else
+            fprintf('bVol Failed.\n');
         end
-		
-		[idate, itime] = GetDateTimeNum();
-		fprintf(fid_log, '--->>> %s_%s,\tDone write trade file. file = %s.\n', num2str(idate), num2str(itime), bfile_today);
-		dst_bfile_today = [path_account 'HistoricalTrade\' bfile_name '_' num2str(idate) '_' num2str(itime) '.xlsx'];
-		CopyFile2HistoryDir(bfile_today, dst_bfile_today);
+
+        [idate, itime] = GetDateTimeNum();
+        fprintf(fid_log, '--->>> %s_%s,\tDone write trade file. file = %s.\n', num2str(idate), num2str(itime), bfile_today);
+        dst_bfile_today = [path_account 'HistoricalTrade\' bfile_name '_' num2str(idate) '_' num2str(itime) '.xlsx'];
+        CopyFile2HistoryDir(bfile_today, dst_bfile_today);
     else
-		[idate, itime] = GetDateTimeNum();
+        [idate, itime] = GetDateTimeNum();
         fprintf(2, '--->>> %s_%s,\tError when copy modle file, when generate trade file. account = %s, file = %s.\n', num2str(idate), num2str(itime), AccountInfo{ai}.NAME, file_modle);
-		fprintf(fid_log, '--->>> %s_%s,\tError when copy modle file, when generate trade file. account = %s, file = %s.\n', num2str(idate), num2str(itime), AccountInfo{ai}.NAME, file_modle);
+        fprintf(fid_log, '--->>> %s_%s,\tError when copy modle file, when generate trade file. account = %s, file = %s.\n', num2str(idate), num2str(itime), AccountInfo{ai}.NAME, file_modle);
     end
 end
     
