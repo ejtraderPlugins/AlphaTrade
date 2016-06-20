@@ -1,4 +1,4 @@
-function [selectMoney, usingMoney, r_share, selectFS, CAP] = GenerateTargetHolding(AccountInfo, id)
+function [selectMoney, usingMoney, r_share, selectFS, CAP,w_stockPrice] = GenerateTargetHolding(AccountInfo, id)
 global fid_log
 
 numOfAccount = length(AccountInfo);
@@ -41,7 +41,7 @@ for i = 1:num_file_alpha
     dst_file_share            = [dir_account 'HistoricalShare\share_' num2str(idate) '_' num2str(itime) file_name_alpha{i} 'txt'];
     CopyFile2HistoryDir(file_share, dst_file_share);
     if exist(file_share,'file')
-        share_today(i,:) = load(file_share);%Ã¿Ò»ÐÐµÄshare_today¶ÔÓ¦µ½alphaÎÄ¼þ
+        share_today(i,:) = load(file_share);%æ¯ä¸€è¡Œçš„share_todayå¯¹åº”åˆ°alphaæ–‡ä»¶
     else
         fprintf(fid_log, '--->>> %s_%s,\Error when load share. file = %s.\n', num2str(idate), num2str(itime), file_share);
         return;
@@ -81,6 +81,8 @@ else
     load(file_price_index);%indexPrice
 end
 
+w_stockPrice = stockPrice;
+
 p300  = find(indexPrice(:,3) == 300);
 p50    = find(indexPrice(:,3) == 16);
 p500  = find(indexPrice(:,3) == 905);
@@ -113,7 +115,7 @@ end
 load(file_dateList);%dateList
 alpha_date = num2str(dateList(end));
 N_STOCK = size(stockPrice,1);
-alphas = zeros(num_file_alpha, N_STOCK);% alphasµÄÃ¿Ò»ÐÐ¶ÔÓ¦Ã¿Ò»¸öalphaÎÄ¼þ
+alphas = zeros(num_file_alpha, N_STOCK);% alphasçš„æ¯ä¸€è¡Œå¯¹åº”æ¯ä¸€ä¸ªalphaæ–‡ä»¶
 for i = 1:num_file_alpha
     file_alpha = [dir_strategy file_name_alpha{i} alpha_date];
     if exist(file_alpha, 'file')
@@ -183,55 +185,14 @@ N_FS = length(fs);
 instrlist                        = zeros(1, N_STOCK);
 instrlist(1:N_STOCK) = stockPrice(1:N_STOCK, 3);
 
-limitUp  = 1.05;
-limitLow = 1.01;
+%limitUp  = 1.05;
+%limitLow = 1.01;
 targetHoldings = zeros(1, N_STOCK);
-CAP                 =  limitLow;%È¡ÏÂÏÞÏÈ±Æ½ü£¬ µÃ²»µ½½á¹ûÔÙÈ¡ÉÏÏÞÀ´Ò»±é
-for fi = 1:N_FS
-    stockShares = zeros(N_STOCK, 1);
-    alpha_benchMoney  = (HS300Price * share_today(:, 1) - A50Price * share_today(:, 2)) * 300 + ZZ500Price * share_today(:, 3) * 200;% Ã¿¸öalpha¶ÔÓ¦µÄbenchMoney
-    benchMoney  = sum(alpha_benchMoney);
-    alpha_money = alpha_benchMoney .* fs(fi);
-    alpha_money = fix(alpha_money ./ 1e4) .* 1e4;
-    usedMoney   = 0;
-    for ii = 1:N_STOCK
-        if (forbidden(1, ii) == 1)
-            continue;
-        end
-
-        if (stockPrice(ii, 2) == 0)
-            stockShares(ii) = currentHoldings(1, ii);
-        elseif (stockPrice(ii, 2) == 1)
-            stockShares(ii) = sum(alpha_money .* alphas(:, ii) / stockPrice(ii, 1));% ÇóºÍ ¸ÃÖ»¹ÉÆ±ÔÚËùÓÐalphaÖÐµÄÄ¿±ê³Ö²Ö
-            minHoldings     = max(0, currentHoldings(1, ii) - availHoldings(1, ii));
-            stockShares(ii) = max(stockShares(ii), minHoldings);
-            stockShares(ii) = fix(stockShares(ii) / 100) * 100;
-        elseif (stockPrice(ii, 2) == 2)
-            stockShares(ii) = sum(alpha_money .* alphas(:, ii) / stockPrice(ii, 1));% ÇóºÍ ¸ÃÖ»¹ÉÆ±ÔÚËùÓÐalphaÖÐµÄÄ¿±ê³Ö²Ö
-            stockShares(ii) = max(stockShares(ii), currentHoldings(1, ii));
-            stockShares(ii) = fix(stockShares(ii) / 100) * 100;
-        elseif (stockPrice(ii, 2) == 3)
-            stockShares(ii) = currentHoldings(1, ii);
-        end
-        
-        usedMoney = usedMoney + stockShares(ii) * stockPrice(ii, 1);
-    end
-
-    if ((usedMoney > benchMoney) && (usedMoney < benchMoney * CAP))
-        selectMoney = sum(alpha_money);
-        selectFS    = fs(fi);
-        usingMoney  = usedMoney;
-        for ii = 1:N_STOCK
-            targetHoldings(1, ii) = stockShares(ii);
-        end
-    end
-end
-% Èç¹ûcapÈ¡ÏÂÏÞÃ»ÓÐµÃµ½±Æ½ü½á¹ûÊ±£¬ÔòcapÈ¡ÉÏÏÞ£¬ÔÙÀ´Ò»±é
-if selectFS == 0
-    CAP = limitUp;
+%CAP                 =  limitLow;%å–ä¸‹é™å…ˆé€¼è¿‘ï¼Œ å¾—ä¸åˆ°ç»“æžœå†å–ä¸Šé™æ¥ä¸€é
+for CAP = 1.01:0.01:1.05
     for fi = 1:N_FS
         stockShares = zeros(N_STOCK, 1);
-        alpha_benchMoney  = sum((HS300Price * share_today(:, 1) - A50Price * share_today(:, 2)) * 300 + ZZ500Price * share_today(:, 3) * 200);% Ã¿¸öalpha¶ÔÓ¦µÄbenchMoney
+        alpha_benchMoney  = (HS300Price * share_today(:, 1) - A50Price * share_today(:, 2)) * 300 + ZZ500Price * share_today(:, 3) * 200;% æ¯ä¸ªalphaå¯¹åº”çš„benchMoney
         benchMoney  = sum(alpha_benchMoney);
         alpha_money = alpha_benchMoney .* fs(fi);
         alpha_money = fix(alpha_money ./ 1e4) .* 1e4;
@@ -244,18 +205,18 @@ if selectFS == 0
             if (stockPrice(ii, 2) == 0)
                 stockShares(ii) = currentHoldings(1, ii);
             elseif (stockPrice(ii, 2) == 1)
-                stockShares(ii) = sum(alpha_money .* alphas(:, ii) / stockPrice(ii, 1));% ÇóºÍ ¸ÃÖ»¹ÉÆ±ÔÚËùÓÐalphaÖÐµÄÄ¿±ê³Ö²Ö
+                stockShares(ii) = sum(alpha_money .* alphas(:, ii) / stockPrice(ii, 1));% æ±‚å’Œ è¯¥åªè‚¡ç¥¨åœ¨æ‰€æœ‰alphaä¸­çš„ç›®æ ‡æŒä»“
                 minHoldings     = max(0, currentHoldings(1, ii) - availHoldings(1, ii));
                 stockShares(ii) = max(stockShares(ii), minHoldings);
                 stockShares(ii) = fix(stockShares(ii) / 100) * 100;
             elseif (stockPrice(ii, 2) == 2)
-                stockShares(ii) = sum(alpha_money .* alphas(:, ii) / stockPrice(ii, 1));% ÇóºÍ ¸ÃÖ»¹ÉÆ±ÔÚËùÓÐalphaÖÐµÄÄ¿±ê³Ö²Ö
+                stockShares(ii) = sum(alpha_money .* alphas(:, ii) / stockPrice(ii, 1));% æ±‚å’Œ è¯¥åªè‚¡ç¥¨åœ¨æ‰€æœ‰alphaä¸­çš„ç›®æ ‡æŒä»“
                 stockShares(ii) = max(stockShares(ii), currentHoldings(1, ii));
                 stockShares(ii) = fix(stockShares(ii) / 100) * 100;
             elseif (stockPrice(ii, 2) == 3)
                 stockShares(ii) = currentHoldings(1, ii);
             end
-
+        
             usedMoney = usedMoney + stockShares(ii) * stockPrice(ii, 1);
         end
 
@@ -268,7 +229,55 @@ if selectFS == 0
             end
         end
     end
+    if selectFS == 0
+        continue;
+    else
+        break;
+	end
 end
+% å¦‚æžœcapå–ä¸‹é™æ²¡æœ‰å¾—åˆ°é€¼è¿‘ç»“æžœæ—¶ï¼Œåˆ™capå–ä¸Šé™ï¼Œå†æ¥ä¸€é
+%if selectFS == 0
+%   CAP = limitUp;
+%    for fi = 1:N_FS
+     %stockShares = zeros(N_STOCK, 1);
+%        alpha_benchMoney  = sum((HS300Price * share_today(:, 1) - A50Price * share_today(:, 2)) * 300 + ZZ500Price * share_today(:, 3) * 200);% æ¯ä¸ªalphaå¯¹åº”çš„benchMoney
+%        benchMoney  = sum(alpha_benchMoney);
+%        alpha_money = alpha_benchMoney .* fs(fi);
+%        alpha_money = fix(alpha_money ./ 1e4) .* 1e4;
+%        usedMoney   = 0;
+%        for ii = 1:N_STOCK
+%            if (forbidden(1, ii) == 1)
+%                continue;
+%            end
+%
+%            if (stockPrice(ii, 2) == 0)
+%                stockShares(ii) = currentHoldings(1, ii);
+%            elseif (stockPrice(ii, 2) == 1)
+%                stockShares(ii) = sum(alpha_money .* alphas(:, ii) / stockPrice(ii, 1));% æ±‚å’Œ è¯¥åªè‚¡ç¥¨åœ¨æ‰€æœ‰alphaä¸­çš„ç›®æ ‡æŒä»“
+%                minHoldings     = max(0, currentHoldings(1, ii) - availHoldings(1, ii));
+%                stockShares(ii) = max(stockShares(ii), minHoldings);
+%                stockShares(ii) = fix(stockShares(ii) / 100) * 100;
+%            elseif (stockPrice(ii, 2) == 2)
+%                stockShares(ii) = sum(alpha_money .* alphas(:, ii) / stockPrice(ii, 1));% æ±‚å’Œ è¯¥åªè‚¡ç¥¨åœ¨æ‰€æœ‰alphaä¸­çš„ç›®æ ‡æŒä»“
+%                stockShares(ii) = max(stockShares(ii), currentHoldings(1, ii));
+%                stockShares(ii) = fix(stockShares(ii) / 100) * 100;
+%            elseif (stockPrice(ii, 2) == 3)
+%                stockShares(ii) = currentHoldings(1, ii);
+%            end
+%
+%            usedMoney = usedMoney + stockShares(ii) * stockPrice(ii, 1);
+%        end
+%
+%        if ((usedMoney > benchMoney) && (usedMoney < benchMoney * CAP))
+%            selectMoney = sum(alpha_money);
+%            selectFS    = fs(fi);
+%            usingMoney  = usedMoney;
+%            for ii = 1:N_STOCK
+%                targetHoldings(1, ii) = stockShares(ii);
+%            end
+%        end
+%    end
+%end
 
 %% write into size files
 [idate, itime] = GetDateTimeNum();
