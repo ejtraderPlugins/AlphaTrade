@@ -1,4 +1,4 @@
-function [selectMoney, usingMoney, r_share, selectFS, CAP] = GenerateTargetHolding(AccountInfo, id)
+function [selectMoney, usingMoney, r_share, selectFS, CAP,w_stockPrice] = GenerateTargetHolding(AccountInfo, id)
 global fid_log
 
 numOfAccount = length(AccountInfo);
@@ -80,6 +80,8 @@ else
     load(file_price_stock);%stockPrice
     load(file_price_index);%indexPrice
 end
+
+w_stockPrice = stockPrice;
 
 p300  = find(indexPrice(:,3) == 300);
 p50    = find(indexPrice(:,3) == 16);
