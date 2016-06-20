@@ -189,7 +189,7 @@ instrlist(1:N_STOCK) = stockPrice(1:N_STOCK, 3);
 %limitLow = 1.01;
 targetHoldings = zeros(1, N_STOCK);
 %CAP                 =  limitLow;%取下限先逼近， 得不到结果再取上限来一遍
-for CAP = [0.01 0.02 0.03 0.04 0.05]
+for CAP = 1.01:0.01:1.05
     for fi = 1:N_FS
         stockShares = zeros(N_STOCK, 1);
         alpha_benchMoney  = (HS300Price * share_today(:, 1) - A50Price * share_today(:, 2)) * 300 + ZZ500Price * share_today(:, 3) * 200;% 每个alpha对应的benchMoney
@@ -233,6 +233,7 @@ for CAP = [0.01 0.02 0.03 0.04 0.05]
         continue;
     else
         break;
+	end
 end
 % 如果cap取下限没有得到逼近结果时，则cap取上限，再来一遍
 %if selectFS == 0
