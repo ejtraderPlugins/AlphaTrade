@@ -30,6 +30,15 @@ if exist(sourceFile, 'file')
     fprintf(fid_log, '--->>> %s_%s,\tBegin to parse holding file. file = %s.\n', num2str(idate), num2str(itime), sourceFile);
     
     [~, ~, rawData] = xlsread(sourceFile);
+    for i = 1:size(rawData,1)
+        for j = 1:size(rawData,2)
+            if strcmp(rawData{i,j},' ')
+                rawData{i,j} = 0;
+            end
+        end
+    end
+                
+                
     numOfInst = size(rawData,1) - 1;
     if numOfInst > 0
         holding = zeros(numOfInst, 3);
