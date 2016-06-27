@@ -6,12 +6,15 @@ global fid_log
 fprintf(fid_log, '--->>> %s_%s,\tBegin Trade Process.\n', num2str(idate), num2str(itime));
 
 %% trade process
-numAccount = length(AccountInfo);
+numAccount  = length(AccountInfo);
 selectMoney = zeros(1, numAccount);
 usingMoney  = zeros(1, numAccount);
-Share             = zeros(1, numAccount);
-selectFS       = zeros(1, numAccount);
-CAP              = zeros(1, numAccount);
+Share       = zeros(1, numAccount);
+selectFS    = zeros(1, numAccount);
+CAP         = zeros(1, numAccount);
+
+%% 选择要操作哪个账号
+AccountInfo = ChooseAccount(AccountInfo);
 
 for i = 1:numAccount
     %% 配置文件中的账号的顺序可能并不等于其id的值，例如排在顺序第4个的账号，其id可能是6，虽然应该尽力避免顺序与id不符。
