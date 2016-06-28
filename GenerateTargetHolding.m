@@ -57,7 +57,7 @@ for i = 1:num_file_alpha
         return;
     end
 end
-r_share = sum(sum(share_today));
+r_share = sum(share_today);
 
 %% load stock price
 [idate,itime] = GetDateTimeNum();
