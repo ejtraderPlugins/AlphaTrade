@@ -46,7 +46,7 @@ for i = 1:num_file_alpha
             fprintf(fid_log, '--->>> %s_%s,\Error. share文件中都是零，需要核对. file = %s.\n', num2str(idate), num2str(itime), file_share);
             fprintf(2, '--->>> %s_%s,\Error. share文件中都是零，需要核对. file = %s.\n', num2str(idate), num2str(itime), file_share);
             errMsg = sprintf('share文件中都是零，需要核对. file = %s.', file_share);
-            errorDlg(errMsg);
+            errordlg(errMsg);
             return;
         end
     else
