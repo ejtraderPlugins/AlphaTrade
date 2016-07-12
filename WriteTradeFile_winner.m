@@ -1,4 +1,4 @@
-function GenerateTradeVol_winner(AccountInfo, id)
+function WriteTradeFile_winner(AccountInfo, id)
 global fid_log
 
 numOfAccount = length(AccountInfo);
@@ -20,7 +20,6 @@ path_lts = AccountInfo{ai}.LTSPATH;
 
 file_target = [path_account 'target_holding.txt'];
 file_current = [path_account 'current_holding.txt'];
-file_trade = [path_account 'trade_holding.txt'];
 
 %% load target file
 if exist(file_target, 'file')
@@ -68,15 +67,6 @@ position_list = [unionHolding(:,1) max(unionHolding(:,2), unionHolding(:,3) - un
 diffHolding = [unionHolding(:,1) position_list(:,2) - unionHolding(:,3)];
 diffHolding(all(diffHolding(:,2) == 0,2),:) = [];
 numOfTrade = size(diffHolding,1);
-
-fid = fopen(file_trade, 'w');
-fprintf(fid, [repmat('%15d\t',1,size(diffHolding,2)), '\n'], diffHolding');
-fclose(fid);
-[idate, itime] = GetDateTimeNum();
-fprintf(fid_log, '--->>> %s_%s,\tDONE. Write trade vol file. file = %s.\n', num2str(idate), num2str(itime), file_trade);
-
-dst_file_trade = [path_account 'HistoricalTrade\trade_holding_' num2str(idate) '_' num2str(itime) '.txt'];
-CopyFile2HistoryDir(file_trade, dst_file_trade);
 
 %% write into trade files for client
 [idate, itime] = GetDateTimeNum();

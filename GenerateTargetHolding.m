@@ -42,12 +42,22 @@ for i = 1:num_file_alpha
     CopyFile2HistoryDir(file_share, dst_file_share);
     if exist(file_share,'file')
         share_today(i,:) = load(file_share);%每一行的share_today对应到alpha文件
+        if sum(share_today(i,:)) == 0
+            fprintf(fid_log, '--->>> %s_%s,\Error. share�ļ��ж����㣬��Ҫ�˶�. file = %s.\n', num2str(idate), num2str(itime), file_share);
+            fprintf(2, '--->>> %s_%s,\Error. share�ļ��ж����㣬��Ҫ�˶�. file = %s.\n', num2str(idate), num2str(itime), file_share);
+            errMsg = sprintf('share�ļ��ж����㣬��Ҫ�˶�. file = %s.', file_share);
+            errordlg(errMsg);
+            return;
+        end
     else
-        fprintf(fid_log, '--->>> %s_%s,\Error when load share. file = %s.\n', num2str(idate), num2str(itime), file_share);
+        fprintf(fid_log, '--->>> %s_%s,\Error. not exist share file.file = %s.\n', num2str(idate), num2str(itime), file_share);
+        fprintf(2, '--->>> %s_%s,\Error. not exist share file.file = %s.\n', num2str(idate), num2str(itime), file_share);
+        errMsg = sprintf('not exist share file. file = %s.', file_share);
+        errordlg(errMsg);
         return;
     end
 end
-r_share = sum(sum(share_today));
+r_share = sum(share_today);
 
 %% load stock price
 [idate,itime] = GetDateTimeNum();
@@ -115,15 +125,17 @@ end
 load(file_dateList);%dateList
 alpha_date = num2str(dateList(end));
 N_STOCK = size(stockPrice,1);
-alphas = zeros(num_file_alpha, N_STOCK);% alphas的每一行对应每一个alpha文件
+alphas = zeros(num_file_alpha, N_STOCK);% alphas的每�?��对应每一个alpha文件
 for i = 1:num_file_alpha
     file_alpha = [dir_strategy file_name_alpha{i} alpha_date];
     if exist(file_alpha, 'file')
         tmpAlphas  = importdata(file_alpha);
         N_TMPALPHA = size(tmpAlphas.textdata, 1);
     else
-        fprintf(2, '--->>> %s_%s,\tError when loading alpha file. file = %s.\n', num2str(idate), num2str(itime), file_alpha);
-        fprintf(fid_log, '--->>> %s_%s,\tError when loading alpha file. file = %s.\n', num2str(idate), num2str(itime), file_alpha);
+        fprintf(2, '--->>> %s_%s,\tError not exist alpha file. file = %s.\n', num2str(idate), num2str(itime), file_alpha);
+        fprintf(fid_log, '--->>> %s_%s,\tError not exist alpha file. file = %s.\n', num2str(idate), num2str(itime), file_alpha);
+        errMsg = sprintf('not exist alpha file. file = %s.', file_alpha);
+        errorDlg(errMsg);
         return;
     end
 
@@ -148,6 +160,12 @@ if exist(file_current, 'file')
         currentHoldings(1, post1) = tmpHoldings(hi, 2);
         availHoldings(1, post1)   = tmpHoldings(hi, 3);
     end
+else
+    fprintf(2, '--->>> %s_%s,\tError not exist current holding file. file = %s.\n', num2str(idate), num2str(itime), file_current);
+    fprintf(fid_log, '--->>> %s_%s,\tError not exist current holding file. file = %s.\n', num2str(idate), num2str(itime), file_current);
+    errMsg = sprintf('not exist current holding file. file = %s.', file_current);
+    errorDlg(errMsg);
+    return;
 end
 
 %% load forbidden file
@@ -188,7 +206,7 @@ instrlist(1:N_STOCK) = stockPrice(1:N_STOCK, 3);
 %limitUp  = 1.05;
 %limitLow = 1.01;
 targetHoldings = zeros(1, N_STOCK);
-%CAP                 =  limitLow;%取下限先逼近， 得不到结果再取上限来一遍
+%CAP                 =  limitLow;%取下限先逼近�?得不到结果再取上限来�?��
 for CAP = 1.01:0.01:1.05
     for fi = 1:N_FS
         stockShares = zeros(N_STOCK, 1);
@@ -235,49 +253,6 @@ for CAP = 1.01:0.01:1.05
         break;
 	end
 end
-% 如果cap取下限没有得到逼近结果时，则cap取上限，再来一遍
-%if selectFS == 0
-%   CAP = limitUp;
-%    for fi = 1:N_FS
-     %stockShares = zeros(N_STOCK, 1);
-%        alpha_benchMoney  = sum((HS300Price * share_today(:, 1) - A50Price * share_today(:, 2)) * 300 + ZZ500Price * share_today(:, 3) * 200);% 每个alpha对应的benchMoney
-%        benchMoney  = sum(alpha_benchMoney);
-%        alpha_money = alpha_benchMoney .* fs(fi);
-%        alpha_money = fix(alpha_money ./ 1e4) .* 1e4;
-%        usedMoney   = 0;
-%        for ii = 1:N_STOCK
-%            if (forbidden(1, ii) == 1)
-%                continue;
-%            end
-%
-%            if (stockPrice(ii, 2) == 0)
-%                stockShares(ii) = currentHoldings(1, ii);
-%            elseif (stockPrice(ii, 2) == 1)
-%                stockShares(ii) = sum(alpha_money .* alphas(:, ii) / stockPrice(ii, 1));% 求和 该只股票在所有alpha中的目标持仓
-%                minHoldings     = max(0, currentHoldings(1, ii) - availHoldings(1, ii));
-%                stockShares(ii) = max(stockShares(ii), minHoldings);
-%                stockShares(ii) = fix(stockShares(ii) / 100) * 100;
-%            elseif (stockPrice(ii, 2) == 2)
-%                stockShares(ii) = sum(alpha_money .* alphas(:, ii) / stockPrice(ii, 1));% 求和 该只股票在所有alpha中的目标持仓
-%                stockShares(ii) = max(stockShares(ii), currentHoldings(1, ii));
-%                stockShares(ii) = fix(stockShares(ii) / 100) * 100;
-%            elseif (stockPrice(ii, 2) == 3)
-%                stockShares(ii) = currentHoldings(1, ii);
-%            end
-%
-%            usedMoney = usedMoney + stockShares(ii) * stockPrice(ii, 1);
-%        end
-%
-%        if ((usedMoney > benchMoney) && (usedMoney < benchMoney * CAP))
-%            selectMoney = sum(alpha_money);
-%            selectFS    = fs(fi);
-%            usingMoney  = usedMoney;
-%            for ii = 1:N_STOCK
-%                targetHoldings(1, ii) = stockShares(ii);
-%            end
-%        end
-%    end
-%end
 
 %% write into size files
 [idate, itime] = GetDateTimeNum();

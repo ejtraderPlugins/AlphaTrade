@@ -92,6 +92,11 @@
                 <alphafilename flag='alphafile'>alpha_Top300NoA50.</alphafilename>
             </alphafiles>
 		</filenames>
+		
+		<strategies>
+			<strategy>alpha</strategy>
+			<strategy>t0</strategy>
+		</strategies>
 	</account>
 	
 	<account id='6' name='HANTAK_GUOXIN' status='off' date='20151013' logclient='xuntou' tradeclient='xuntou' unit='1' npart='1'>

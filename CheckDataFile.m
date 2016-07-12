@@ -16,7 +16,7 @@ for i = 1:num_account
                 if fid > 0
                     fprintf(fid, '%d\t%d\t%d\n', 0,0,0);
                     fprintf(fid_log, '--->>> %s_%s,\tDone Intialise share file. account = %s. file = %s.\n', num2str(idate), num2str(itime), AccountInfo{i}.NAME, file_share);
-                    fprintf('--->>> %s_%s,\tDone Intialise share file. account = %s. file = %s.\n', num2str(idate), num2str(itime), AccountInfo{i}.NAME, file_share);
+                    fprintf(2, '--->>> %s_%s,\tNEED to intialise share file. account = %s. file = %s.\n', num2str(idate), num2str(itime), AccountInfo{i}.NAME, file_share);
                     fclose(fid);
                 else
                     fprintf(fid_log, '--->>> %s_%s,\tError Intialise share file. account = %s. file = %s.\n', num2str(idate), num2str(itime), AccountInfo{i}.NAME, file_share);
