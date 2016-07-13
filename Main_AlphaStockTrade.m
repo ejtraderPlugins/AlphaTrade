@@ -7,6 +7,9 @@ fid_log = AlphaTradeLog();
 %% parse the xml config file, get account information
 AccountInfo = ParseAccountConfig();
 
+%% 选择要操作哪个账号
+AccountInfo = ChooseAccount(AccountInfo);
+
 %% check some data file
 CheckDataFile(AccountInfo);
 
