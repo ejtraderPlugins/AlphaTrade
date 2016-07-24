@@ -18,7 +18,6 @@ dir_tradefile      = [dir_client_account 'TradeFile\NormalTrade\'];
 dir_history        = [dir_client_account 'HistoryData\'];
 
 file_trade    = [dir_tmpdata 'trade_holding.txt'];
-file_modle    = [dir_server 'ComData\modle.xlsx'];
 
 %% write into trade files for client
 if exist(file_trade, 'file')
