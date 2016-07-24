@@ -10,7 +10,6 @@ usingMoney  = zeros(1, numAccount);
 Share       = zeros(3, numAccount);
 selectFS    = zeros(1, numAccount);
 CAP         = zeros(1, numAccount);
-
 %% LOOP
 while flag
     %% 选择要操作哪个账号
