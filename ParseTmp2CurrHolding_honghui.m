@@ -11,12 +11,21 @@ end
 [idate, itime] = GetDateTimeNum();
 fprintf(fid_log, '--->>> %s_%s,\tBegin to parse stock holding file. account = %s.\n', num2str(idate), num2str(itime), AccountInfo{ai}.NAME);
 
-path_source = [AccountInfo{ai}.BASEPATH AccountInfo{ai}.NAME '\'];
-path_dest   = [AccountInfo{ai}.BASEPATH AccountInfo{ai}.NAME '\'];
-path_com    = [AccountInfo{ai}.BASEPATH 'com_data\'];
-sourceFile  = [path_source 'stock_holding.xlsx'];
-destFile    = [path_dest 'current_holding.txt'];
-file_split  = [path_com 'split.txt'];
+dir_server  = ['\\' AccountInfo{ai}.SERVERIP '\Chn_Stocks_Trading_System\AlphaTrade\'];
+dir_client  = AccountInfo{ai}.BASEPATH;
+dir_client_account = [dir_client AccountInfo{ai}.NAME '\'];
+if sum(cell2mat(strfind(AccountInfo{ai}.STRATEGY, 't0')))%如果有t0策略
+    dir_current  = [dir_client_account 'CurrentData\t0\'];
+else
+    dir_current  = [dir_client_account 'CurrentData\alpha\'];
+end
+dir_com     = [dir_server 'ComData\'];
+dir_dest    = [dir_client_account 'TmpData\'];
+dir_history = [dir_client_account 'HistoryData\'];
+
+sourceFile  = [dir_current 'stock_holding.xlsx'];
+destFile    = [dir_dest 'current_holding.txt'];
+file_split  = [dir_com 'split.txt'];
 unit = str2double(AccountInfo{ai}.UNIT);
 
 %% load split files
@@ -51,11 +60,12 @@ if exist(sourceFile, 'file')
 else
     [idate, itime] = GetDateTimeNum();
     fprintf(fid_log, '--->>> %s_%s,\tError when open holding file. file = %s.\n', num2str(idate), num2str(itime), sourceFile);
+    fprintf(2, '--->>> %s_%s,\tError when open holding file. file = %s.\n', num2str(idate), num2str(itime), sourceFile);
 end
 
-if exist(path_dest, 'dir')
+if exist(dir_dest, 'dir')
 else
-    mkdir(path_dest);
+    mkdir(dir_dest);
 end
 if exist('holding','var')
     if ~isempty(holding)
@@ -74,9 +84,9 @@ end
 
 %% copy file to history direction
 [idate, itime] = GetDateTimeNum();
-dst_sourceFile = [path_source 'HistoricalLog\stock_holding_' num2str(idate) '_' num2str(itime) '.txt'];
-dst_destFile   = [path_dest 'HistoricalCurrentHolding\current_holding_' num2str(idate) '_' num2str(itime) '.txt'];
-dst_file_split = [path_dest 'HistoricalSplit\split_' num2str(idate) '_' num2str(itime) '.txt'];
+dst_sourceFile = [dir_history 'HistoricalLog\stock_holding_' num2str(idate) '_' num2str(itime) '.xlsx'];
+dst_destFile   = [dir_history 'HistoricalCurrentHolding\current_holding_' num2str(idate) '_' num2str(itime) '.txt'];
+dst_file_split = [dir_history 'HistoricalSplit\split_' num2str(idate) '_' num2str(itime) '.txt'];
 CopyFile2HistoryDir(sourceFile, dst_sourceFile);
 CopyFile2HistoryDir(destFile, dst_destFile);
 CopyFile2HistoryDir(file_split, dst_file_split);

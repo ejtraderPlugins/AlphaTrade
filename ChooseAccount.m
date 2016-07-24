@@ -1,8 +1,6 @@
 function account_info = ChooseAccount(mAccountInfo)
 % 首先初始化把所有的STATUS都置为off，把选定的账号STATUS改成on
 global fid_log
-msg = '账号列表如下所示，请选择需要操作的账号，输入对应的序号，多个请用逗号隔开，回车确认：';
-fprintf('--->>> %s\n', msg);
 [idate, itime] = GetDateTimeNum();
 numOfAccount = length(mAccountInfo);
 for i = 1:numOfAccount
@@ -10,6 +8,8 @@ for i = 1:numOfAccount
 	fprintf('%s\t-\t%s\n', mAccountInfo{i}.ID, mAccountInfo{i}.NAME);
 end
 
+msg = '账号列表如下所示，请选择需要操作的账号，输入对应的序号，多个请用逗号隔开，回车确认：';
+fprintf('--->>> %s\n', msg);
 while 1	
 	s_account = input('请输入账号序号：\n', 's');
 	int_account = str2num(s_account);
@@ -24,7 +24,6 @@ while 1
 		for i = 1:numOfChooseAccount
 			fprintf('%s\t-\t%s\n', mAccountInfo{int_account(i)}.ID,mAccountInfo{int_account(i)}.NAME);
 		end
-		
 		s_forsure = input('确认请按y并回车，重新选择请按n并回车\n','s');
         if strcmp(s_forsure, 'y')
 			for i = 1:numOfChooseAccount
@@ -42,5 +41,4 @@ numOfChooseAccount = length(int_account);
 for i = 1:numOfChooseAccount
 	mAccountInfo{int_account(i)}.STATUS = 'on';
 end
-
 account_info = mAccountInfo;
