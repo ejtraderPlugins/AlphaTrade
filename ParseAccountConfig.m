@@ -8,15 +8,14 @@ xmlfile = '\\192.168.1.199\Chn_Stocks_Trading_System\AlphaTrade\Config\AccountCo
 xDoc = xmlread(xmlfile);%读取xml文件
 xRoot = xDoc.getDocumentElement();%获取根节点
 %获取server节点
-Server = xRoot.getElementsByTagName('server');
-item_server = Server.getElementsByTagName('ip');
-ip_server = char(item_server.getTextContent);
+IP = xRoot.getElementsByTagName('ip');
+ip_server = char(IP.item(0).getTextContent);
 %获取account节点
 Accounts = xRoot.getElementsByTagName('account');
 numOfAccount = Accounts.getLength();
 AccountInfo = cell(1, numOfAccount);
 for i = 1:numOfAccount
-    AccountInfo{i}.IPSERVER = ip_server;
+    AccountInfo{i}.SERVERIP = ip_server;
 
     m_account = Accounts.item(i-1);
     % 读取账号属性信息

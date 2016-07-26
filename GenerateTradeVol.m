@@ -10,16 +10,13 @@ end
 fprintf(fid_log, '--->>> %s_%s,\tBegin generate trade vol. account = %s.\n', num2str(idate), num2str(itime), AccountInfo{ai}.NAME);
 
 dir_client         = AccountInfo{ai}.BASEPATH;
-dir_server         = ['\\' AccountInfo{ai}.SERVERIP '\Chn_Stocks_Trading_System\AlphaTrade\'];
 dir_client_account = [dir_client AccountInfo{ai}.NAME '\'];
-dir_server_account = [dir_server AccountInfo{ai}.NAME '\'];
 dir_tmpdata        = [dir_client_account 'TmpData\'];
-dir_tradefile      = [dir_client_account 'TradeFile\NormalTrade\']
 dir_history        = [dir_client_account 'HistoryData\'];
 
 file_target        = [dir_tmpdata 'target_holding.txt'];
 file_current       = [dir_tmpdata 'current_holding.txt'];
-file_trade         = [dir_tradefile 'trade_holding.txt'];
+file_trade         = [dir_tmpdata 'trade_holding.txt'];
 
 %% load target file
 if exist(file_target, 'file')

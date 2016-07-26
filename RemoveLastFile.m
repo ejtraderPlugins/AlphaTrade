@@ -1,8 +1,8 @@
-function RemoveLastFile(mAccountInfo, id)
+function RemoveLastFile(AccountInfo, id)
 global fid_log
-numOfAccount = length(mAccountInfo);
+numOfAccount = length(AccountInfo);
 for ai = 1:numOfAccount
-    if str2double(mAccountInfo{ai}.ID) == id
+    if str2double(AccountInfo{ai}.ID) == id
         break;
     end
 end
@@ -13,12 +13,12 @@ dir_tmpdata        = [dir_client_account 'TmpData\'];
 dir_tradefile      = [dir_client_account 'TradeFile\NormalTrade\'];
 
 % remove the files under TmpData\
-files_tmpdata = cellstr(dir_tmpdata);
+files_tmpdata = cellstr(ls(dir_tmpdata));
 if isempty(files_tmpdata)
 else
 	for i = 1:length(files_tmpdata)
 		mfile = [dir_tmpdata files_tmpdata{i}];
-		if exist(mfile, 'file')
+		if exist(mfile, 'file') ~= 0 && exist(mfile, 'file') ~= 7
 			delete(mfile);
 		end
 	end
@@ -28,12 +28,12 @@ fprintf(fid_log, '--->>> %s_%s,\tDone func = RemoveLastFile. Done remove files. 
 fprintf('--->>> %s_%s,\tDone func = RemoveLastFile. Done remove files. dir = %s.\n', num2str(idate), num2str(itime), dir_tmpdata);		
 
 % remove the files under TradeFile\NormalTrade\
-files_trade = cellstr(dir_tradefile);
+files_trade = cellstr(ls(dir_tradefile));
 if isempty(files_trade)
 else
 	for i = 1:length(files_trade)
 		mfile = [dir_tradefile files_trade{i}];
-		if exist(mfile, 'file')
+		if exist(mfile, 'file') ~= 0 && exist(mfile, 'file') ~= 7
 			delete(mfile);
 		end
 	end

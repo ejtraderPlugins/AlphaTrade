@@ -1,4 +1,6 @@
 function [sell_size, buy_size] = CheckDiff(AccountInfo,id,w_stockPrice)
+global fid_log
+
 sell_size = 0;
 buy_size = 0;
 numOfAccount = length(AccountInfo);

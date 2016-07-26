@@ -15,9 +15,9 @@ dir_server  = ['\\' AccountInfo{ai}.SERVERIP '\Chn_Stocks_Trading_System\AlphaTr
 dir_client  = AccountInfo{ai}.BASEPATH;
 dir_client_account = [dir_client AccountInfo{ai}.NAME '\'];
 if sum(cell2mat(strfind(AccountInfo{ai}.STRATEGY, 't0')))%如果有t0策略
-    dir_current  = [dir_client_account 'CurrentData\t0\'];
+    dir_current  = [dir_client_account 'CurrentData\T0\'];
 else
-    dir_current  = [dir_client_account 'CurrentData\alpha\'];
+    dir_current  = [dir_client_account 'CurrentData\Alpha\'];
 end
 dir_com     = [dir_server 'ComData\'];
 dir_dest    = [dir_client_account 'TmpData\'];

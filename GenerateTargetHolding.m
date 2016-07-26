@@ -13,6 +13,7 @@ usingMoney = 0;
 selectFS = 0;
 CAP = 0;
 r_share = 0;
+w_stockPrice = 0;
 
 [idate, itime] = GetDateTimeNum();
 fprintf(fid_log, '--->>> %s_%s,\tBegin generate target holding. account = %s.\n', num2str(idate), num2str(itime), AccountInfo{ai}.NAME);
@@ -32,23 +33,14 @@ file_name_alpha   = AccountInfo{ai}.ALPHAFILE;
 file_current      = [dir_tmpdata 'current_holding.txt'];
 file_forbidden    = [dir_sharedata 'forbidden.txt'];
 file_co_forbidden = [dir_comdata 'co_forbidden_list.txt'];
-file_newstocklist = [dir_comdata 'newstock_list'];
+file_newstocklist = [dir_comdata 'newstock_list.txt'];
 file_dateList     = [dir_matdata 'dateList.mat'];
 
 %% copy to history direction before use
 dst_file_forbidden    = [dir_history 'HistoricalForbidden\forbidden_' num2str(idate) '_' num2str(itime) '.txt'];
 dst_file_co_forbidden = [dir_history 'HistoricalCoForbidden\co_forbidden_list_' num2str(idate) '_' num2str(itime) '.txt'];
 CopyFile2HistoryDir(file_forbidden, dst_file_forbidden);
-CopyFile2HistoryDir(file_co_forbidden, dst_file_co_forb;
-
-%% load current holding
-if exist(file_current, 'file')
-    tmpHoldings = load(file_current);
-else
-    fprintf(fid_log, '--->>> %s_%s,\tError not exist current holding file. file = %s.\n', num2str(idate), num2str(itime), file_current);
-    fprintf(2, '--->>> %s_%s,\tError not exist current holding file. file = %s.\n', num2str(idate), num2str(itime), file_current);
-    return;
-end
+CopyFile2HistoryDir(file_co_forbidden, dst_file_co_forbidden);
 
 %% load alpha file
 num_file_alpha = length(file_name_alpha);
@@ -85,11 +77,12 @@ for i = 1:num_file_alpha
         return;
     end
 end
-r_share = (sum(share_today))';
+r_share = (sum([share_today;[0 0 0]]))';
 
 %% load stock price
 [idate,itime] = GetDateTimeNum();
 mins     = floor(itime / 100);
+mins = 1459;%for test %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5
 if mins < 931 || mins > 1500
     fprintf(fid_log, '--->>> %s_%s,\tError when loading price mat file. error = not trading time.\n', num2str(idate), num2str(itime));
     fprintf(2, '--->>> %s_%s,\tError when loading price mat file. error = not trading time.\n', num2str(idate), num2str(itime));
@@ -122,7 +115,7 @@ end
 w_stockPrice = stockPrice;
 
 p300  = find(indexPrice(:,3) == 300);
-p50    = find(indexPrice(:,3) == 16);
+p50   = find(indexPrice(:,3) == 16);
 p500  = find(indexPrice(:,3) == 905);
 if isempty(p300)
     datas      = urlread('http://hq.sinajs.cn/list=s_sh000300');
@@ -159,7 +152,6 @@ for i = 1:num_file_alpha
         post = find(stockPrice(:, 3) == inst, 1, 'first');
         alphas(i,post) = tmpAlphas{i}.data(ti, 1);
     end
-end end
 end
 
 %% load current holding
@@ -273,11 +265,9 @@ for CAP = 1.01:0.01:1.05
             end
         end
     end
-    if selectFS == 0
-        continue;
-    else
+    if selectFS ~= 0
         break;
-	end
+    end
 end
 
 %% write into size files

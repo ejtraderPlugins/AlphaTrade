@@ -11,7 +11,8 @@ Share       = zeros(3, numAccount);
 selectFS    = zeros(1, numAccount);
 CAP         = zeros(1, numAccount);
 %% LOOP
-while flag
+Flag = 1;
+while Flag
     %% 选择要操作哪个账号
     AccountInfo = ChooseAccount(AccountInfo);
     %% 逐个账号开始生成篮子
@@ -61,5 +62,5 @@ while flag
             end
         end
     end
-    flag = Loop();
+    Flag = Loop();
 end

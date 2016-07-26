@@ -8,7 +8,7 @@ for i = 1:numOfAccount
 	fprintf('%s\t-\t%s\n', mAccountInfo{i}.ID, mAccountInfo{i}.NAME);
 end
 
-msg = '账号列表如下所示，请选择需要操作的账号，输入对应的序号，多个请用逗号隔开，回车确认：';
+msg = '账号列表如上所示，请选择需要操作的账号，输入对应的序号，多个请用逗号隔开，回车确认：';
 fprintf('--->>> %s\n', msg);
 while 1	
 	s_account = input('请输入账号序号：\n', 's');
